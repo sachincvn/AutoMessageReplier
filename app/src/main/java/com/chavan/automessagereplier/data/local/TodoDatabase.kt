@@ -1,4 +1,4 @@
-package com.chavan.automessagereplier.data
+package com.chavan.automessagereplier.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

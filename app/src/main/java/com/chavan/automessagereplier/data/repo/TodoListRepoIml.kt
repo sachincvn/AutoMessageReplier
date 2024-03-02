@@ -13,6 +13,7 @@ import com.chavan.automessagereplier.domain.model.TodoItem
 import com.chavan.automessagereplier.domain.repo.TodoListRepo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import java.net.ConnectException
 import java.net.UnknownHostException
 
@@ -34,14 +35,13 @@ class TodoListRepoIml(
         return withContext(dispatcher){
             try {
                 refreshRoomCache()
-            }
-            catch (e:Exception){
+            }catch (e: Exception){
                 when(e){
-                    is UnknownHostException, is ConnectException, is retrofit2.HttpException ->{
-                        Log.e("HTTP","Error, No data from remote")
-                        if (isCacheEmpty()){
-                            Log.e("Cache","Error, No data from local Room cache")
-                            throw Exception("Error, Device offline and\n no data from local Room cache")
+                    is UnknownHostException, is ConnectException, is HttpException -> {
+                        Log.e("HTTP","Error: No data from Remote")
+                        if(isCacheEmpty()){
+                            Log.e("Cache","Error: No data from local Room cache")
+                            throw Exception("Error: Device offline and\nno data from local Room cache")
                         }
                     }else -> throw e
                 }
@@ -50,8 +50,13 @@ class TodoListRepoIml(
     }
 
     private suspend fun refreshRoomCache(){
-        val  remoteData = api.getAllTodos().filterNotNull()
-        dao.addAllTodoItems(remoteData.toLocalTodoItemListFromRemote())
+        try {
+            val  remoteData = api.getAllTodos().filterNotNull()
+            dao.addAllTodoItems(remoteData.toLocalTodoItemListFromRemote())
+        }
+        catch (ex : Exception){
+            ex.printStackTrace()
+        }
     }
 
     private fun isCacheEmpty() : Boolean{
