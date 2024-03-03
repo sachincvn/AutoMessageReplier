@@ -11,11 +11,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.chavan.automessagereplier.presentation.todo_list.TodoListScreen
 import com.chavan.automessagereplier.presentation.todo_list.TodoListViewModel
+import com.chavan.automessagereplier.presentation.todo_upsert.TodoUpsertScreen
+import com.chavan.automessagereplier.presentation.todo_upsert.TodoUpsertViewModel
 import com.chavan.automessagereplier.ui.theme.AutoMessageReplierTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -32,7 +36,6 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     val listViewModel : TodoListViewModel = hiltViewModel()
-
                     NavHost(
                         navController = navController,
                         startDestination = Screen.TodoItemListScreen.route,
@@ -40,8 +43,18 @@ class MainActivity : ComponentActivity() {
                         composable(route=Screen.TodoItemListScreen.route){
                             TodoListScreen(navController = navController, viewModel = listViewModel)
                         }
-                        composable(route=Screen.TodoUpsertScreen.route){
-                            //TODO
+                        composable(
+                            route=Screen.TodoUpsertScreen.route + "?todoId={todoId}",
+                            arguments = listOf(
+                                navArgument(
+                                    name = "todoId",
+                                ){
+                                    type = NavType.IntType
+                                    defaultValue = -1
+                                }
+                            )
+                            ){
+                            TodoUpsertScreen(navController = navController)
                         }
                     }
                 }

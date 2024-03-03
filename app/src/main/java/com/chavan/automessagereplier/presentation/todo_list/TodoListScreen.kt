@@ -47,6 +47,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.chavan.automessagereplier.core.common.StringResources
 import com.chavan.automessagereplier.domain.util.TodoItemOrder
+import com.chavan.automessagereplier.presentation.Screen
 import com.chavan.automessagereplier.presentation.todo_list.components.SortingDrawerMenu
 import com.chavan.automessagereplier.presentation.todo_list.components.TodoItemCard
 import kotlinx.coroutines.launch
@@ -92,7 +93,9 @@ fun TodoListScreen(
        Scaffold(
            floatingActionButton = {
                FloatingActionButton(
-                   onClick = { /*TODO*/ },
+                   onClick = {
+                             navController.navigate(Screen.TodoUpsertScreen.route)
+                             },
                    shape = CircleShape,
                    containerColor = MaterialTheme.colorScheme.primary
                ) {
@@ -172,7 +175,9 @@ fun TodoListScreen(
                                    viewModel.onEvent(TodoListEvent.ToggleArchived(todoItem = todo))
                                },
                                onCardClick = {
-//                                   navController.navigate()
+                                   navController.navigate(
+                                       Screen.TodoUpsertScreen.route + "?todoId=${todo.id}"
+                                   )
                                }
                            )
                        }

@@ -28,12 +28,12 @@ fun TodoItem.toRemoteTodoItem() : RemoteTodoItem{
 
 fun LocalTodoItem.toToDoItem() : TodoItem{
     return TodoItem(
-        title=title,
-        description=description,
-        timStamp=timStamp,
-        isCompleted=isCompleted,
-        isArchived=isArchived,
-        id=id
+        title =title,
+        description =description,
+        timStamp =timStamp,
+        isCompleted =isCompleted,
+        isArchived =isArchived,
+        id =id
     )
 }
 
@@ -50,12 +50,12 @@ fun LocalTodoItem.toRemoteTodoItem() : RemoteTodoItem{
 
 fun RemoteTodoItem.toTodoItem() : TodoItem{
     return TodoItem(
-        title=title,
-        description=description,
-        timStamp=timStamp,
-        isCompleted=isCompleted,
-        isArchived=isArchived,
-        id=id
+        title =title,
+        description =description,
+        timStamp =timStamp,
+        isCompleted =isCompleted,
+        isArchived =isArchived,
+        id =id
     )
 }
 
@@ -99,12 +99,12 @@ fun List<TodoItem>.toRemoteTodoItemList() : List<RemoteTodoItem>{
 fun List<LocalTodoItem>.toTodoItemListFromLocal() : List<TodoItem>{
     return  this.map {todo ->
         TodoItem(
-            title=todo.title,
-            description=todo.description,
-            timStamp=todo.timStamp,
-            isCompleted=todo.isCompleted,
-            isArchived=todo.isArchived,
-            id=todo.id
+            title =todo.title,
+            description =todo.description,
+            timStamp =todo.timStamp,
+            isCompleted =todo.isCompleted,
+            isArchived =todo.isArchived,
+            id =todo.id
         )
     }
 }
@@ -125,12 +125,12 @@ fun List<LocalTodoItem>.toRemoteTodoItemListFromLocal() : List<RemoteTodoItem>{
 fun List<RemoteTodoItem>.toTodoItemListFromRemote() : List<TodoItem>{
     return  this.map {todo ->
         TodoItem(
-            title=todo.title,
-            description=todo.description,
-            timStamp=todo.timStamp,
-            isCompleted=todo.isCompleted,
-            isArchived=todo.isArchived,
-            id=todo.id
+            title =todo.title,
+            description =todo.description,
+            timStamp =todo.timStamp,
+            isCompleted =todo.isCompleted,
+            isArchived =todo.isArchived,
+            id =todo.id
         )
     }
 }

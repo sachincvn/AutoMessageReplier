@@ -14,5 +14,5 @@ data class RemoteTodoItem(
     @SerializedName("IsArchived")
     val isArchived: Boolean,
     @SerializedName("Id")
-    val id: Int
+    val id: Int?
 )
