@@ -8,8 +8,11 @@ import com.chavan.automessagereplier.domain.model.CustomMessage
 import com.chavan.automessagereplier.domain.usecase.DeleteCustomMessageUseCase
 import com.chavan.automessagereplier.domain.usecase.GetAllCustomMessagesUseCase
 import com.chavan.automessagereplier.domain.usecase.UpsertCustomMessageUseCase
+import com.chavan.automessagereplier.presentation.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -26,6 +29,11 @@ class HomeViewModel @Inject constructor(
 
     private val _state: MutableStateFlow<HomeScreenState> = MutableStateFlow(HomeScreenState())
     val state: StateFlow<HomeScreenState> = _state.asStateFlow()
+
+    private val _uiEvent = MutableSharedFlow<UiEvent>()
+    val uiEvent: SharedFlow<UiEvent> = _uiEvent
+
+
     init {
         getAllCustomMessages()
     }
@@ -48,11 +56,6 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             upsertCustomMessageUseCase(customMessage.copy(isActive = !customMessage.isActive)).collectLatest { result ->
                 when(result){
-                    is Resource.Error -> {
-                    }
-                    is Resource.Loading -> {
-                        ScreenState.Loading
-                    }
                     is Resource.Success -> {
                         val updatedList = when (val screenState = state.value.result) {
                             is ScreenState.Success -> {
@@ -66,6 +69,9 @@ class HomeViewModel @Inject constructor(
                         }
                         _state.value = HomeScreenState(result = ScreenState.Success(updatedList))
                     }
+                    is Resource.Error -> {
+                    }
+                    else -> return@collectLatest
                 }
             }
         }
@@ -77,9 +83,7 @@ class HomeViewModel @Inject constructor(
                 .collectLatest { result ->
                     when(result){
                         is Resource.Error -> {
-                        }
-                        is Resource.Loading -> {
-                            ScreenState.Loading
+                            _uiEvent.emit(UiEvent.ShowSnackbar(result.message ?: "Error deleting message"))
                         }
                         is Resource.Success -> {
                             val updatedList = when (val screenState = state.value.result) {
@@ -95,6 +99,7 @@ class HomeViewModel @Inject constructor(
                                 result = ScreenState.Success(updatedList)
                             )
                         }
+                        else -> return@collectLatest
                     }
                 }
         }
