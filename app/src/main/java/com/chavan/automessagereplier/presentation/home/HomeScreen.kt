@@ -1,42 +1,48 @@
 package com.chavan.automessagereplier.presentation.home
 
 import android.annotation.SuppressLint
-import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.chavan.automessagereplier.core.utils.ScreenState
 import com.chavan.automessagereplier.presentation.UiEvent
-import com.chavan.automessagereplier.presentation.home.components.CustomMessageItem
-import kotlinx.coroutines.CoroutineScope
+import com.chavan.automessagereplier.presentation.home.components.ReplyEmailListItem
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -54,7 +60,8 @@ fun HomeScreen(
             SnackbarHost(
                 hostState = snackBarHostState,
                 modifier = Modifier.padding(16.dp)
-            ) },
+            )
+        },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { navigator.navigate("AddCustomMessage") }
@@ -63,12 +70,56 @@ fun HomeScreen(
             }
         },
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = {
-                    Text(text = "Auto Messenger")
+                    Text(
+                        "AutoMessenger",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium)
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { /* do something */ }) {
+                        IconButton(onClick = { /* do something */ }) {
+                            Icon(
+                                imageVector = Icons.Filled.Menu,
+                                contentDescription = "Localized description"
+                            )
+                        }
+                    }
+                },
+                actions = {
+                    var checked by remember { mutableStateOf(false) }
+                    Switch(
+                        checked = checked,
+                        onCheckedChange = {
+                            checked = it
+                        },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = MaterialTheme.colorScheme.primary,
+                            checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                            uncheckedThumbColor = MaterialTheme.colorScheme.secondary,
+                            uncheckedTrackColor = MaterialTheme.colorScheme.secondaryContainer,
+                        ),
+                        thumbContent = if (checked) {
+                            {
+                                Icon(
+                                    imageVector = Icons.Filled.Check,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(SwitchDefaults.IconSize),
+                                )
+                            }
+                        } else {
+                            null
+                        }
+                    )
                 }
-            )},
-        ){
+            )
+        },
+    ) {
+
         when (val result = state.result) {
             is ScreenState.Loading -> {
                 Box(
@@ -81,26 +132,42 @@ fun HomeScreen(
                     )
                 }
             }
+
             is ScreenState.Success -> {
                 Box(
-                    modifier = Modifier.padding(top = 50.dp, bottom = 15.dp)
+                    modifier = Modifier.padding(top = 60.dp, bottom = 15.dp)
                 ) {
-                    LazyColumn {
-                        items(result.data) { customMessage ->
-                            CustomMessageItem(
-                                customMessage = customMessage,
-                                onCheckBoxClick = {
-                                    homeViewModel.onEvent(HomeScreenEvents.ToggleActive(customMessage))
-                                },
-                                isCheckboxActive = customMessage.isActive,
-                                onDeleteClick = {
-                                    homeViewModel.onEvent(HomeScreenEvents.DeleteCustomMessage(customMessage.id))
-                                }
+                    if (result.data.isEmpty()) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                        ) {
+                            Text(
+                                text = "No item found",
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .align(Alignment.Center),
                             )
+                        }
+                    } else {
+                        LazyColumn {
+                            items(items = result.data, key = { it.id }) { customMessage ->
+                                ReplyEmailListItem(
+                                    customMessage = customMessage,
+                                    navigateToDetail = {},
+                                    toggleSelection = {
+                                        homeViewModel.onEvent(
+                                            HomeScreenEvents.ToggleActive(
+                                                customMessage
+                                            )
+                                        )
+                                    },
+                                )
+                            }
                         }
                     }
                 }
             }
+
             is ScreenState.Error -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -117,17 +184,18 @@ fun HomeScreen(
     }
 
     LaunchedEffect(key1 = true) {
-        homeViewModel.getAllCustomMessages()
         homeViewModel.uiEvent.collectLatest { event ->
             when (event) {
                 is UiEvent.ShowSnackbar -> {
-                    val result = snackBarHostState.showSnackbar(
+                    snackBarHostState.showSnackbar(
                         message = event.message,
-                        actionLabel = "Undo",
                         duration = SnackbarDuration.Short
                     )
                 }
             }
         }
+    }
+    LaunchedEffect(true) {
+        homeViewModel.onEvent(HomeScreenEvents.Refresh)
     }
 }

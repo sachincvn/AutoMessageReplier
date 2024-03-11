@@ -1,115 +1,267 @@
 package com.chavan.automessagereplier.presentation.custom_message
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Button
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.chavan.automessagereplier.data.local.ReplyToOption
 import com.chavan.automessagereplier.domain.model.CustomMessage
+import com.chavan.automessagereplier.presentation.UiEvent
+import com.chavan.automessagereplier.presentation.custom_message.components.FieldWrapper
+import com.chavan.automessagereplier.presentation.custom_message.components.UpsertTextField
+import kotlinx.coroutines.flow.collectLatest
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun  UpsertCustomMessageScreen(
+fun UpsertCustomMessageScreen(
     navigator: NavController,
     upsertCustomMessageViewModel: UpsertCustomMessageViewModel = hiltViewModel()
 ) {
     val state by upsertCustomMessageViewModel.state.collectAsState()
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
 
     Scaffold(
         snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
+            SnackbarHost(
+                hostState = snackBarHostState,
+                modifier = Modifier.padding(16.dp)
+            )
         },
-        floatingActionButton = {
-            FloatingActionButton(
+        topBar = { TopAppBar(navigator = navigator, viewModel = upsertCustomMessageViewModel) },
+        bottomBar = {
+            Button(
                 onClick = {
-                    upsertCustomMessageViewModel.onEvent(UpsertCustomMessageEvents.UpsertCustomMessage(
-                        customMessage = CustomMessage(
-                            receivedMessage = state.receivedMessage.value,
-                            replyMessage = state.receivedMessage.value
+                    upsertCustomMessageViewModel.onEvent(
+                        UpsertCustomMessageEvents.UpsertCustomMessage(
+                            customMessage = CustomMessage(
+                                receivedMessage = state.receivedMessage.value.trim(),
+                                replyMessage = state.replyMessage.value.trim(),
+                                isActive = state.isActive.value,
+                                replyToOption = state.replyToOption.value,
+                                receivedPattern = state.receivedPattern.value,
+                                selectedContacts = state.selectedContacts.value
+                            )
                         )
-                    ))
-                }
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+                    .padding(bottom = 24.dp, top = 5.dp)
             ) {
-                if (state.isLoading) {
-                    CircularProgressIndicator()
-                } else {
-                    Icon(imageVector = Icons.Rounded.Check, contentDescription = "Save Custom Message")
+                Text(text = "Save")
+            }
+        },
+    ) {
+        if (state.isCustomMessageAdded) {
+            navigator.navigateUp()
+        }
+
+        Box(
+            Modifier
+                .padding(top = 50.dp, bottom = 70.dp)
+                .fillMaxSize()
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .padding(horizontal = 12.dp, vertical = 10.dp)
+                    .fillMaxSize()
+            ) {
+                item {
+                    Column {
+                        FieldWrapper {
+                            UpsertTextField(
+                                value = state.receivedMessage.value,
+                                onTextChanged = {
+                                    state.receivedMessage.value = it
+                                },
+                                label = "Received Message",
+                                placeholder = "Enter received message",
+                            )
+
+
+                            upsertCustomMessageViewModel.receivedPattern.forEach { option ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .selectable(
+                                            selected = (option == state.receivedPattern.value),
+                                            onClick = { state.receivedPattern.value = option }
+                                        ),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    RadioButton(
+                                        selected = (option == state.receivedPattern.value),
+                                        onClick = { state.receivedPattern.value = option },
+                                        colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.primary)
+                                    )
+
+                                    Text(
+                                        text = option.value!!,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        modifier = Modifier.padding(start = 8.dp)
+                                    )
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(20.dp))
+                        FieldWrapper {
+                            UpsertTextField(
+                                value = state.replyMessage.value,
+                                onTextChanged = {
+                                    state.replyMessage.value = it
+                                },
+                                label = "Reply Message",
+                                placeholder = "Enter reply message",
+                            )
+
+                            upsertCustomMessageViewModel.replyToOption.forEach { option ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .selectable(
+                                            selected = (option == state.replyToOption.value),
+                                            onClick = { state.replyToOption.value = option }
+                                        ),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    RadioButton(
+                                        selected = (option == state.replyToOption.value),
+                                        onClick = { state.replyToOption.value = option },
+                                        colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.primary)
+                                    )
+
+                                    Text(
+                                        text = option.value!!,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        modifier = Modifier.padding(start = 8.dp)
+                                    )
+                                }
+                            }
+                        }
+
+                        if (state.replyToOption.value == ReplyToOption.SpecificContacts) {
+                            Spacer(modifier = Modifier.height(20.dp))
+                            FieldWrapper {
+                                UpsertTextField(
+                                    value = state.receivedMessage.value,
+                                    onTextChanged = {
+                                        state.receivedMessage.value = it
+                                    },
+                                    label = "Select contacts",
+                                    placeholder = "Add contact names",
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+    LaunchedEffect(true) {
+        upsertCustomMessageViewModel.uiEvent.collectLatest { event ->
+            when (event) {
+                is UiEvent.ShowSnackbar -> {
+                    snackBarHostState.showSnackbar(
+                        message = event.message,
+                        duration = SnackbarDuration.Short
+                    )
                 }
             }
         }
-    ) { paddingValues ->
-            if (state.error != null) {
-                LaunchedEffect(Unit) {
-                    snackbarHostState.showSnackbar(state.error!!)
-                }
-            }
-            if (state.isCustomMessageAdded) {
-                navigator.navigateUp()
-            }
-
-            Column(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxSize()
-            ) {
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    value = state.receivedMessage.value,
-                    onValueChange = {
-                        state.receivedMessage.value = it
-                    },
-                    textStyle = TextStyle(
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 17.sp
-                    ),
-                    placeholder = {
-                        Text(text = "Received Message")
-                    }
-                )
-
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    value = state.replyMessage.value,
-                    onValueChange = {
-                        state.replyMessage.value = it
-                    },
-                    textStyle = TextStyle(
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 17.sp
-                    ),
-                    placeholder = {
-                        Text(text = "Reply Message")
-                    }
-                )
-            }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TopAppBar(
+    navigator: NavController,
+    viewModel: UpsertCustomMessageViewModel
+) {
+    val state by viewModel.state.collectAsState()
+    CenterAlignedTopAppBar(
+        title = {
+            Text(
+                "Add custom reply",
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium)
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = { navigator.navigateUp() }) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "Back"
+                )
+            }
+        },
+        actions = {
+            Switch(
+                checked = state.isActive.value,
+                onCheckedChange = {
+                    state.isActive.value = it
+                },
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = MaterialTheme.colorScheme.primary,
+                    checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                    uncheckedThumbColor = MaterialTheme.colorScheme.secondary,
+                    uncheckedTrackColor = MaterialTheme.colorScheme.secondaryContainer,
+                ),
+                thumbContent = if (state.isActive.value) {
+                    {
+                        Icon(
+                            imageVector = Icons.Filled.Check,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.surface,
+                            modifier = Modifier.size(SwitchDefaults.IconSize),
+                        )
+                    }
+                } else {
+                    null
+                }
+            )
+        }
+    )
 }

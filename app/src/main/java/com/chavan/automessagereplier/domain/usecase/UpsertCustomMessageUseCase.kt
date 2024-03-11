@@ -14,7 +14,7 @@ class UpsertCustomMessageUseCase @Inject constructor(
         return flow {
             emit(Resource.Loading())
             try {
-                val result = customMessageRepo.upsertCustomMessage(customMessage)
+                customMessageRepo.upsertCustomMessage(customMessage)
                 emit(Resource.Success(true))
             }
             catch (ex : Exception){

@@ -10,13 +10,13 @@ import com.chavan.automessagereplier.domain.usecase.GetAllCustomMessagesUseCase
 import com.chavan.automessagereplier.domain.usecase.UpsertCustomMessageUseCase
 import com.chavan.automessagereplier.presentation.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,7 +25,7 @@ class HomeViewModel @Inject constructor(
     private val getAllCustomMessagesUseCase: GetAllCustomMessagesUseCase,
     private val deleteCustomMessageUseCase: DeleteCustomMessageUseCase,
     private val upsertCustomMessageUseCase: UpsertCustomMessageUseCase
-) : ViewModel(){
+) : ViewModel() {
 
     private val _state: MutableStateFlow<HomeScreenState> = MutableStateFlow(HomeScreenState())
     val state: StateFlow<HomeScreenState> = _state.asStateFlow()
@@ -38,24 +38,18 @@ class HomeViewModel @Inject constructor(
         getAllCustomMessages()
     }
 
-    fun onEvent(homeScreenEvent: HomeScreenEvents){
-        when(homeScreenEvent){
-            is HomeScreenEvents.DeleteCustomMessage ->{
-                deleteCustomMessage(homeScreenEvent.id)
-            }
-            HomeScreenEvents.Refresh -> {
-                getAllCustomMessages()
-            }
-            is HomeScreenEvents.ToggleActive -> {
-                toggleActive(homeScreenEvent.customMessage)
-            }
+    fun onEvent(homeScreenEvent: HomeScreenEvents) {
+        when (homeScreenEvent) {
+            is HomeScreenEvents.DeleteCustomMessage -> deleteCustomMessage(homeScreenEvent.id)
+            HomeScreenEvents.Refresh -> getAllCustomMessages()
+            is HomeScreenEvents.ToggleActive -> toggleActive(homeScreenEvent.customMessage)
         }
     }
 
     private fun toggleActive(customMessage: CustomMessage) {
         viewModelScope.launch {
             upsertCustomMessageUseCase(customMessage.copy(isActive = !customMessage.isActive)).collectLatest { result ->
-                when(result){
+                when (result) {
                     is Resource.Success -> {
                         val updatedList = when (val screenState = state.value.result) {
                             is ScreenState.Success -> {
@@ -65,12 +59,18 @@ class HomeViewModel @Inject constructor(
                                 }
                                 updatedCustomMessages
                             }
+
                             else -> mutableListOf()
                         }
                         _state.value = HomeScreenState(result = ScreenState.Success(updatedList))
                     }
+
                     is Resource.Error -> {
+                        UiEvent.ShowSnackbar(
+                            result.message ?: "Error deleting message"
+                        )
                     }
+
                     else -> return@collectLatest
                 }
             }
@@ -81,15 +81,21 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             deleteCustomMessageUseCase(id)
                 .collectLatest { result ->
-                    when(result){
+                    when (result) {
                         is Resource.Error -> {
-                            _uiEvent.emit(UiEvent.ShowSnackbar(result.message ?: "Error deleting message"))
+                            _uiEvent.emit(
+                                UiEvent.ShowSnackbar(
+                                    result.message ?: "Error deleting message"
+                                )
+                            )
                         }
+
                         is Resource.Success -> {
                             val updatedList = when (val screenState = state.value.result) {
                                 is ScreenState.Success -> {
                                     screenState.data.toMutableList()
                                 }
+
                                 else -> {
                                     mutableListOf()
                                 }
@@ -99,27 +105,21 @@ class HomeViewModel @Inject constructor(
                                 result = ScreenState.Success(updatedList)
                             )
                         }
+
                         else -> return@collectLatest
                     }
                 }
         }
     }
 
-    fun getAllCustomMessages() {
+    private fun getAllCustomMessages() {
         viewModelScope.launch {
             getAllCustomMessagesUseCase().collectLatest { result ->
                 _state.value = HomeScreenState(
                     result = when (result) {
                         is Resource.Error -> ScreenState.Error(result.message!!)
                         is Resource.Loading -> ScreenState.Loading
-                        is Resource.Success -> {
-                            if (result.data!!.isEmpty()){
-                                ScreenState.Error("No data found")
-                            }
-                            else{
-                                ScreenState.Success(result.data)
-                            }
-                        }
+                        is Resource.Success -> ScreenState.Success(result.data!!)
                     }
                 )
             }
