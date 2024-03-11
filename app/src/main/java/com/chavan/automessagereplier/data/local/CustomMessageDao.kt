@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CustomMessageDao {
-
     @Upsert
     suspend fun upsertCustomMessage(customMessageEntity: CustomMessageEntity)
 
@@ -18,5 +17,7 @@ interface CustomMessageDao {
 
     @Query("SELECT * FROM custommessageentity")
     suspend fun getCustomMessages() : List<CustomMessageEntity>
+    @Upsert
+    suspend fun configCustomMessenger(customMessageConfigEntity: CustomMessageConfigEntity)
 
 }

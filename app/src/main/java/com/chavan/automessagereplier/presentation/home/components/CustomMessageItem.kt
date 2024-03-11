@@ -1,76 +1,119 @@
+/*
+ * Copyright 2022 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.chavan.automessagereplier.presentation.home.components
 
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.chavan.automessagereplier.domain.model.CustomMessage
 
+@OptIn(
+    ExperimentalFoundationApi::class,
+    ExperimentalAnimationApi::class
+)
 @Composable
-fun CustomMessageItem(
+fun ReplyEmailListItem(
     customMessage: CustomMessage,
-    isCheckboxActive : Boolean,
-    onDeleteClick: () -> Unit,
-    onCheckBoxClick : (Boolean) -> Unit,
+    navigateToDetail: (Long) -> Unit,
+    toggleSelection: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = Modifier
-            .padding(top = 12.dp, start = 8.dp, end = 8.dp)
-            .fillMaxWidth(),
+        modifier = modifier
+            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .semantics { selected = customMessage.isActive }
+            .clip(CardDefaults.shape),
+        colors = CardDefaults.cardColors(
+            containerColor = if (customMessage.isActive) MaterialTheme.colorScheme.primaryContainer
+            else MaterialTheme.colorScheme.secondaryContainer
+        )
     ) {
-        Card(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(20.dp)
         ) {
-            Row(
+            Row(modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Checkbox(
-                    checked = isCheckboxActive,
-                    onCheckedChange = {
-                        onCheckBoxClick(it)
-                    },
-                    modifier = Modifier.padding(8.dp)
-                )
+                val clickModifier = Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                ) {
+                    navigateToDetail(customMessage.id)
+                }
+
+                CircularAvatar(text = customMessage.replyToOption.value!!)
 
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(8.dp)
+                        .padding(horizontal = 12.dp, vertical = 4.dp),
+                    verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = customMessage.replyMessage,
-                        style = MaterialTheme.typography.headlineSmall,
-                        modifier = Modifier.padding(bottom = 4.dp)
+                        text = customMessage.replyToOption.value,
+                        style = MaterialTheme.typography.labelMedium
                     )
                     Text(
-                        text = customMessage.receivedMessage,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        text = if(customMessage.isActive) "active" else "in-active",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.outline
                     )
                 }
+                Checkbox(customMessage.isActive, onCheckedChange = { toggleSelection()  })
 
-                IconButton(
-                    onClick = onDeleteClick,
-                    modifier = Modifier.padding(8.dp)
-                ) {
-                    Icon(Icons.Default.Delete, contentDescription = "Delete")
-                }
             }
+
+            Text("Received message: ${customMessage.receivedMessage}",
+                maxLines = 1,
+                style = MaterialTheme.typography.bodyMedium,
+                overflow = TextOverflow.Ellipsis,
+                color = if (customMessage.isActive) MaterialTheme.colorScheme.onPrimaryContainer
+                else MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
+            )
+            Text("Reply message:  ${customMessage.replyMessage}",
+                maxLines = 1,
+                style = MaterialTheme.typography.bodyMedium,
+                overflow = TextOverflow.Ellipsis,
+                color = if (customMessage.isActive) MaterialTheme.colorScheme.onPrimaryContainer
+                else MaterialTheme.colorScheme.onSurface,
+                )
         }
     }
 }

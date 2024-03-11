@@ -8,7 +8,10 @@ fun CustomMessageEntity.toCustomMessage() : CustomMessage{
         receivedMessage = receivedMessage,
         replyMessage = replyMessage,
         id = id,
-        isActive = isActive
+        isActive = isActive,
+        receivedPattern = receivedPattern,
+        replyToOption = replyToOption,
+        selectedContacts = selectedContacts
     )
 }
 
@@ -17,6 +20,9 @@ fun CustomMessage.toCustomMessageEntity() : CustomMessageEntity{
         receivedMessage = receivedMessage,
         replyMessage = replyMessage,
         id = id,
-        isActive = isActive
+        isActive = isActive,
+        receivedPattern = receivedPattern,
+        replyToOption = replyToOption,
+        selectedContacts = selectedContacts
     )
 }
