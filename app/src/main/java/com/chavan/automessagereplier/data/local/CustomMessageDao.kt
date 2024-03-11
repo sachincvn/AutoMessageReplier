@@ -20,4 +20,6 @@ interface CustomMessageDao {
     @Upsert
     suspend fun configCustomMessenger(customMessageConfigEntity: CustomMessageConfigEntity)
 
+    @Query("SELECT * FROM custommessageconfigentity")
+    suspend fun getCustomMessengerConfig() : CustomMessageConfigEntity?
 }

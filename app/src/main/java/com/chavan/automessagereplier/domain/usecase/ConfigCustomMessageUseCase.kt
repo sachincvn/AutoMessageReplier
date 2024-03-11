@@ -24,4 +24,21 @@ class ConfigCustomMessageUseCase @Inject constructor(
         }
     }
 
+    suspend fun getCustomMessageConfig() : Flow<Resource<CustomMessageConfig>>{
+        return flow {
+            emit(Resource.Loading())
+            try {
+                val result = customMessageRepo.getCustomMessageConfig()
+                emit(Resource.Success(result))
+            }
+            catch (ex: NullPointerException){
+                ex.printStackTrace()
+            }
+            catch (ex : Exception){
+                ex.printStackTrace()
+                emit(Resource.Error("Something went wrong !"))
+            }
+        }
+    }
+
 }

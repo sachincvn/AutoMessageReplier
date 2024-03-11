@@ -43,6 +43,7 @@ import com.chavan.automessagereplier.core.utils.ScreenState
 import com.chavan.automessagereplier.presentation.UiEvent
 import com.chavan.automessagereplier.presentation.home.components.ReplyEmailListItem
 import kotlinx.coroutines.flow.collectLatest
+import okhttp3.internal.wait
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -52,6 +53,7 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by homeViewModel.state.collectAsState()
+    val isAutoMessengerActive by remember { homeViewModel.autoMessengerActiveState }
 
     val snackBarHostState = remember { SnackbarHostState() }
 
@@ -90,11 +92,10 @@ fun HomeScreen(
                     }
                 },
                 actions = {
-                    var checked by remember { mutableStateOf(false) }
                     Switch(
-                        checked = checked,
+                        checked = isAutoMessengerActive,
                         onCheckedChange = {
-                            checked = it
+                            homeViewModel.onEvent(HomeScreenEvents.ToggleAutoReplier(it))
                         },
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = MaterialTheme.colorScheme.primary,
@@ -102,12 +103,12 @@ fun HomeScreen(
                             uncheckedThumbColor = MaterialTheme.colorScheme.secondary,
                             uncheckedTrackColor = MaterialTheme.colorScheme.secondaryContainer,
                         ),
-                        thumbContent = if (checked) {
+                        thumbContent = if (isAutoMessengerActive) {
                             {
                                 Icon(
                                     imageVector = Icons.Filled.Check,
                                     contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary,
+                                    tint = MaterialTheme.colorScheme.surface,
                                     modifier = Modifier.size(SwitchDefaults.IconSize),
                                 )
                             }

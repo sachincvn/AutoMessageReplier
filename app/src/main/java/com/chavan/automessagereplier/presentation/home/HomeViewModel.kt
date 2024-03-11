@@ -1,16 +1,19 @@
 package com.chavan.automessagereplier.presentation.home
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chavan.automessagereplier.core.utils.Resource
 import com.chavan.automessagereplier.core.utils.ScreenState
 import com.chavan.automessagereplier.domain.model.CustomMessage
+import com.chavan.automessagereplier.domain.model.CustomMessageConfig
+import com.chavan.automessagereplier.domain.usecase.ConfigCustomMessageUseCase
 import com.chavan.automessagereplier.domain.usecase.DeleteCustomMessageUseCase
 import com.chavan.automessagereplier.domain.usecase.GetAllCustomMessagesUseCase
 import com.chavan.automessagereplier.domain.usecase.UpsertCustomMessageUseCase
 import com.chavan.automessagereplier.presentation.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -24,17 +27,22 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val getAllCustomMessagesUseCase: GetAllCustomMessagesUseCase,
     private val deleteCustomMessageUseCase: DeleteCustomMessageUseCase,
-    private val upsertCustomMessageUseCase: UpsertCustomMessageUseCase
+    private val upsertCustomMessageUseCase: UpsertCustomMessageUseCase,
+    private val configCustomMessageUseCase: ConfigCustomMessageUseCase
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<HomeScreenState> = MutableStateFlow(HomeScreenState())
     val state: StateFlow<HomeScreenState> = _state.asStateFlow()
+
+    private val _autoMessengerActiveState = mutableStateOf(false)
+    val autoMessengerActiveState: State<Boolean> = _autoMessengerActiveState
 
     private val _uiEvent = MutableSharedFlow<UiEvent>()
     val uiEvent: SharedFlow<UiEvent> = _uiEvent
 
 
     init {
+        getCustomMessageConfig()
         getAllCustomMessages()
     }
 
@@ -43,6 +51,27 @@ class HomeViewModel @Inject constructor(
             is HomeScreenEvents.DeleteCustomMessage -> deleteCustomMessage(homeScreenEvent.id)
             HomeScreenEvents.Refresh -> getAllCustomMessages()
             is HomeScreenEvents.ToggleActive -> toggleActive(homeScreenEvent.customMessage)
+            is HomeScreenEvents.ToggleAutoReplier -> toggleAutoReplier(homeScreenEvent.isActive)
+        }
+    }
+
+    private fun toggleAutoReplier(active: Boolean) {
+        viewModelScope.launch {
+            configCustomMessageUseCase(customMessageConfig = CustomMessageConfig(isActive = active))
+                .collectLatest {
+                    when (it) {
+                        is Resource.Error -> _uiEvent.emit(
+                            UiEvent.ShowSnackbar(
+                                it.message ?: "Something went wrong"
+                            )
+                        )
+
+                        is Resource.Loading -> ScreenState.Loading
+                        is Resource.Success -> {
+                            _autoMessengerActiveState.value = it.data!!
+                        }
+                    }
+                }
         }
     }
 
@@ -112,6 +141,25 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun getCustomMessageConfig() {
+        viewModelScope.launch {
+            configCustomMessageUseCase.getCustomMessageConfig().collectLatest {
+                when (it) {
+                    is Resource.Error -> _uiEvent.emit(
+                        UiEvent.ShowSnackbar(
+                            it.message ?: "Something went wrong"
+                        )
+                    )
+                    is Resource.Success -> {
+                        _autoMessengerActiveState.value = it.data!!.isActive
+                    }
+
+                    else -> return@collectLatest
+                }
+            }
+        }
+    }
+
     private fun getAllCustomMessages() {
         viewModelScope.launch {
             getAllCustomMessagesUseCase().collectLatest { result ->
@@ -125,4 +173,5 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
 }
