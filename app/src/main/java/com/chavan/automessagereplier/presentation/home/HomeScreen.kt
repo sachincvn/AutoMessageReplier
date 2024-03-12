@@ -27,10 +27,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -38,7 +35,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.chavan.automessagereplier.core.utils.ScreenState
 import com.chavan.automessagereplier.presentation.UiEvent
 import com.chavan.automessagereplier.presentation.home.components.ReplyEmailListItem
 import kotlinx.coroutines.flow.collectLatest
@@ -50,8 +46,7 @@ fun HomeScreen(
     navigator: NavController,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
-    val state by homeViewModel.state.collectAsState()
-    var isAutoMessengerActive by remember { homeViewModel._autoMessengerActiveState }
+    val state = homeViewModel.state.value
 
     val snackBarHostState = remember { SnackbarHostState() }
 
@@ -91,9 +86,8 @@ fun HomeScreen(
                 },
                 actions = {
                     Switch(
-                        checked = isAutoMessengerActive,
+                        checked = state.isAutoMessagingActive,
                         onCheckedChange = {
-                            isAutoMessengerActive = it
                             homeViewModel.onEvent(HomeScreenEvents.ToggleAutoReplier(it))
                         },
                         colors = SwitchDefaults.colors(
@@ -102,7 +96,7 @@ fun HomeScreen(
                             uncheckedThumbColor = MaterialTheme.colorScheme.secondary,
                             uncheckedTrackColor = MaterialTheme.colorScheme.secondaryContainer,
                         ),
-                        thumbContent = if (isAutoMessengerActive) {
+                        thumbContent = if (state.isAutoMessagingActive) {
                             {
                                 Icon(
                                     imageVector = Icons.Filled.Check,
@@ -120,69 +114,66 @@ fun HomeScreen(
         },
     ) {
 
-        when (val result = state.result) {
-            is ScreenState.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .align(Alignment.Center)
-                    )
-                }
+        if (state.isLoading) {
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .align(Alignment.Center)
+                )
             }
+        }
+        if (state.errorMessage != null) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                Text(
+                    text = state.errorMessage ?: "Something went wrong",
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .align(Alignment.Center)
+                )
+            }
+        }
 
-            is ScreenState.Success -> {
-                Box(
-                    modifier = Modifier.padding(top = 60.dp, bottom = 15.dp)
-                ) {
-                    if (result.data.isEmpty()) {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                        ) {
-                            Text(
-                                text = "No item found",
-                                modifier = Modifier
-                                    .padding(16.dp)
-                                    .align(Alignment.Center),
-                            )
-                        }
-                    } else {
-                        LazyColumn {
-                            items(items = result.data, key = { it.id }) { customMessage ->
-                                ReplyEmailListItem(
-                                    customMessage = customMessage,
-                                    navigateToDetail = {},
-                                    toggleSelection = {
-                                        homeViewModel.onEvent(
-                                            HomeScreenEvents.ToggleActive(
-                                                customMessage
-                                            )
+        if (!state.isLoading && state.errorMessage == null) {
+            Box(
+                modifier = Modifier.padding(top = 60.dp, bottom = 15.dp)
+            ) {
+                if (state.customMessages.isEmpty()) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        Text(
+                            text = "No item found",
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .align(Alignment.Center),
+                        )
+                    }
+                } else {
+                    LazyColumn {
+                        items(items = state.customMessages, key = { it.id }) { customMessage ->
+                            ReplyEmailListItem(
+                                customMessage = customMessage,
+                                navigateToDetail = {},
+                                toggleSelection = {
+                                    homeViewModel.onEvent(
+                                        HomeScreenEvents.ToggleActive(
+                                            customMessage
                                         )
-                                    },
-                                )
-                            }
+                                    )
+                                },
+                            )
                         }
                     }
                 }
             }
-
-            is ScreenState.Error -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                ) {
-                    Text(
-                        text = result.message ?: "Something went wrong",
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .align(Alignment.Center)
-                    )
-                }
-            }
         }
-    }
 
+    }
     LaunchedEffect(key1 = true) {
         homeViewModel.uiEvent.collectLatest { event ->
             when (event) {

@@ -1,12 +1,10 @@
 package com.chavan.automessagereplier.presentation.home
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chavan.automessagereplier.core.utils.Resource
-import com.chavan.automessagereplier.core.utils.ScreenState
 import com.chavan.automessagereplier.domain.model.CustomMessage
 import com.chavan.automessagereplier.domain.model.CustomMessageConfig
 import com.chavan.automessagereplier.domain.usecase.ConfigCustomMessageUseCase
@@ -16,10 +14,7 @@ import com.chavan.automessagereplier.domain.usecase.UpsertCustomMessageUseCase
 import com.chavan.automessagereplier.presentation.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,14 +27,11 @@ class HomeViewModel @Inject constructor(
     private val configCustomMessageUseCase: ConfigCustomMessageUseCase
 ) : ViewModel() {
 
-    private val _state: MutableStateFlow<HomeScreenState> = MutableStateFlow(HomeScreenState())
-    val state: StateFlow<HomeScreenState> = _state.asStateFlow()
-
-    val _autoMessengerActiveState = mutableStateOf(false)
+    private val _state = mutableStateOf(HomeScreenState())
+    val state: State<HomeScreenState> = _state
 
     private val _uiEvent = MutableSharedFlow<UiEvent>()
     val uiEvent: SharedFlow<UiEvent> = _uiEvent
-
 
     init {
         getCustomMessageConfig()
@@ -65,11 +57,10 @@ class HomeViewModel @Inject constructor(
                                 it.message ?: "Something went wrong"
                             )
                         )
-
-                        is Resource.Loading -> ScreenState.Loading
                         is Resource.Success -> {
-                            _autoMessengerActiveState.value = it.data!!
+                            _state.value = _state.value.copy(isAutoMessagingActive = active)
                         }
+                        else -> return@collectLatest
                     }
                 }
         }
@@ -80,18 +71,14 @@ class HomeViewModel @Inject constructor(
             upsertCustomMessageUseCase(customMessage.copy(isActive = !customMessage.isActive)).collectLatest { result ->
                 when (result) {
                     is Resource.Success -> {
-                        val updatedList = when (val screenState = state.value.result) {
-                            is ScreenState.Success -> {
-                                val updatedCustomMessages = screenState.data.map {
-                                    if (it.id == customMessage.id) customMessage.copy(isActive = !customMessage.isActive)
-                                    else it
-                                }
-                                updatedCustomMessages
+                        val updatedMessages = _state.value.customMessages.map {
+                            if (it.id == customMessage.id) {
+                                it.copy(isActive = !customMessage.isActive)
+                            } else {
+                                it
                             }
-
-                            else -> mutableListOf()
                         }
-                        _state.value = HomeScreenState(result = ScreenState.Success(updatedList))
+                        _state.value = _state.value.copy(customMessages = updatedMessages)
                     }
 
                     is Resource.Error -> {
@@ -120,19 +107,8 @@ class HomeViewModel @Inject constructor(
                         }
 
                         is Resource.Success -> {
-                            val updatedList = when (val screenState = state.value.result) {
-                                is ScreenState.Success -> {
-                                    screenState.data.toMutableList()
-                                }
-
-                                else -> {
-                                    mutableListOf()
-                                }
-                            }
-                            updatedList.removeAll { it.id == id }
-                            _state.value = HomeScreenState(
-                                result = ScreenState.Success(updatedList)
-                            )
+                            val updatedMessages = _state.value.customMessages.filter { it.id != id }
+                            _state.value = _state.value.copy(customMessages = updatedMessages)
                         }
 
                         else -> return@collectLatest
@@ -151,7 +127,7 @@ class HomeViewModel @Inject constructor(
                         )
                     )
                     is Resource.Success -> {
-                        _autoMessengerActiveState.value = it.data!!.isActive
+                        _state.value = _state.value.copy(isAutoMessagingActive = it.data!!.isActive)
                     }
 
                     else -> return@collectLatest
@@ -163,13 +139,17 @@ class HomeViewModel @Inject constructor(
     private fun getAllCustomMessages() {
         viewModelScope.launch {
             getAllCustomMessagesUseCase().collectLatest { result ->
-                _state.value = HomeScreenState(
-                    result = when (result) {
-                        is Resource.Error -> ScreenState.Error(result.message!!)
-                        is Resource.Loading -> ScreenState.Loading
-                        is Resource.Success -> ScreenState.Success(result.data!!)
+                when(result){
+                    is Resource.Error -> {
+                        _state.value = _state.value.copy(isLoading = false, errorMessage = result.message)
                     }
-                )
+                    is Resource.Loading ->{
+                        _state.value = _state.value.copy(isLoading = true, errorMessage = null)
+                    }
+                    is Resource.Success -> {
+                        _state.value = _state.value.copy(isLoading = false, errorMessage = null, customMessages = result.data!!)
+                    }
+                }
             }
         }
     }
