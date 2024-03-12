@@ -17,7 +17,6 @@ class CustomMessageRepoImpl @Inject constructor(
 
     private val dao = db.dao;
     override suspend fun getCustomMessages(): List<CustomMessage> {
-        delay(5000)
         return dao.getCustomMessages().map {
             it.toCustomMessage()
         }

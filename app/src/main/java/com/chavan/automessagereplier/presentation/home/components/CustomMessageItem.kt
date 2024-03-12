@@ -21,13 +21,22 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.RemoveCircleOutline
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ElevatedAssistChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,21 +44,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.chavan.automessagereplier.domain.model.CustomMessage
 
-@OptIn(
-    ExperimentalFoundationApi::class,
-    ExperimentalAnimationApi::class
-)
 @Composable
-fun ReplyEmailListItem(
+fun CustomMessageItem(
     customMessage: CustomMessage,
     navigateToDetail: (Long) -> Unit,
-    toggleSelection: () -> Unit,
+    toggleActive: () -> Unit,
+    toggleDelete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -58,8 +66,8 @@ fun ReplyEmailListItem(
             .semantics { selected = customMessage.isActive }
             .clip(CardDefaults.shape),
         colors = CardDefaults.cardColors(
-            containerColor = if (customMessage.isActive) MaterialTheme.colorScheme.primaryContainer
-            else MaterialTheme.colorScheme.secondaryContainer
+            containerColor = if (customMessage.isActive) MaterialTheme.colorScheme.secondaryContainer
+            else MaterialTheme.colorScheme.errorContainer
         )
     ) {
         Column(
@@ -88,16 +96,30 @@ fun ReplyEmailListItem(
                 ) {
                     Text(
                         text = customMessage.replyToOption.value,
-                        style = MaterialTheme.typography.labelMedium
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     Text(
                         text = if (customMessage.isActive) "active" else "in-active",
                         style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.outline
+                        color = if (customMessage.isActive) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onErrorContainer
                     )
                 }
-                Checkbox(customMessage.isActive, onCheckedChange = { toggleSelection() })
-
+//                Checkbox(customMessage.isActive, onCheckedChange = { toggleSelection() })
+                IconButton(onClick = toggleDelete) {
+                    Icon(imageVector = Icons.Outlined.Delete,
+                        contentDescription = "Delete",
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                }
+                IconButton(
+                    onClick =  toggleActive,
+                ) {
+                    Icon(imageVector = if (customMessage.isActive) Icons.Outlined.CheckCircle else Icons.Outlined.RemoveCircleOutline,
+                        contentDescription = "Check",
+                        tint = if (customMessage.isActive) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.error
+                    )
+                }
             }
 
             Text(
@@ -117,6 +139,27 @@ fun ReplyEmailListItem(
                 color = if (customMessage.isActive) MaterialTheme.colorScheme.onPrimaryContainer
                 else MaterialTheme.colorScheme.onSurface,
             )
+
         }
+    }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun CustomMessageItemPreview(){
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(vertical = 10.dp)
+    ){
+        CustomMessageItem(
+            customMessage = CustomMessage(
+                receivedMessage = "Hello",
+                replyMessage = "Welcome",
+                isActive = true),
+            navigateToDetail = {},
+            toggleActive = { /*TODO*/ },
+            toggleDelete = {}
+        )
     }
 }

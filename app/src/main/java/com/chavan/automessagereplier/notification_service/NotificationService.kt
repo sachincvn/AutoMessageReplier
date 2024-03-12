@@ -23,10 +23,6 @@ class NotificationService : NotificationListenerService() {
     @Inject
     lateinit var autoMessageReplierUseCase: AutoMessageReplierUseCase
 
-    override fun onCreate() {
-        super.onCreate()
-    }
-
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         CoroutineScope(Dispatchers.IO).launch {
             if (!autoMessageReplierUseCase.isServiceEnabled()) {
@@ -48,14 +44,7 @@ class NotificationService : NotificationListenerService() {
     private fun handleNotification(sbn: StatusBarNotification) {
         CoroutineScope(Dispatchers.IO).launch {
             if ("com.whatsapp" == sbn.packageName) {
-                val notificationTitle =
-                    sbn.notification.extras.getCharSequence(Notification.EXTRA_TITLE)
-                val notificationText =
-                    sbn.notification.extras.getCharSequence(Notification.EXTRA_TEXT)
-                val message = autoMessageReplierUseCase.replyMessage(
-                    notificationTitle.toString(),
-                    notificationText.toString()
-                )
+                val message = autoMessageReplierUseCase.getReplyMessage(sbn)
 
                 if (message != null) {
                     sendReply(sbn = sbn, message = message)

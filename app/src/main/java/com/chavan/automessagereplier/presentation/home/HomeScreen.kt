@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ChatBubbleOutline
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -25,6 +26,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -36,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.chavan.automessagereplier.presentation.UiEvent
-import com.chavan.automessagereplier.presentation.home.components.ReplyEmailListItem
+import com.chavan.automessagereplier.presentation.home.components.CustomMessageItem
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,7 +63,11 @@ fun HomeScreen(
             FloatingActionButton(
                 onClick = { navigator.navigate("AddCustomMessage") }
             ) {
-                Icon(Icons.Filled.Add, contentDescription = "Add")
+                Icon(
+                    Icons.Default.ChatBubbleOutline,
+                    contentDescription = "Add",
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
             }
         },
         topBar = {
@@ -156,16 +162,21 @@ fun HomeScreen(
                 } else {
                     LazyColumn {
                         items(items = state.customMessages, key = { it.id }) { customMessage ->
-                            ReplyEmailListItem(
+                            CustomMessageItem(
                                 customMessage = customMessage,
                                 navigateToDetail = {},
-                                toggleSelection = {
+                                toggleActive = {
                                     homeViewModel.onEvent(
                                         HomeScreenEvents.ToggleActive(
                                             customMessage
                                         )
                                     )
                                 },
+                                toggleDelete = {
+                                    homeViewModel.onEvent(
+                                        HomeScreenEvents.DeleteCustomMessage(customMessage.id)
+                                    )
+                                }
                             )
                         }
                     }

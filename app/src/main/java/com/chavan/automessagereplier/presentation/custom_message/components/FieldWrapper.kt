@@ -22,7 +22,7 @@ fun FieldWrapper(
             .border(
                 border = BorderStroke(
                     width = 1.dp,
-                    MaterialTheme.colorScheme.inverseOnSurface,
+                    MaterialTheme.colorScheme.surfaceVariant,
                 ),
                 shape = MaterialTheme.shapes.small
             )

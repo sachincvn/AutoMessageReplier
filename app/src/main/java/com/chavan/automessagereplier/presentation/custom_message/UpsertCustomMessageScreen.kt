@@ -1,6 +1,7 @@
 package com.chavan.automessagereplier.presentation.custom_message
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,9 +35,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -104,6 +108,7 @@ fun UpsertCustomMessageScreen(
             LazyColumn(
                 modifier = Modifier
                     .padding(horizontal = 12.dp, vertical = 10.dp)
+                    .padding(top = 10.dp)
                     .fillMaxSize()
             ) {
                 item {
@@ -182,6 +187,8 @@ fun UpsertCustomMessageScreen(
                         if (state.replyToOption.value == ReplyToOption.SpecificContacts) {
                             Spacer(modifier = Modifier.height(20.dp))
                             FieldWrapper {
+                                var selectedContacts by remember { mutableStateOf<List<String>>(emptyList()) }
+
                                 UpsertTextField(
                                     value = state.receivedMessage.value,
                                     onTextChanged = {
@@ -190,12 +197,18 @@ fun UpsertCustomMessageScreen(
                                     label = "Select contacts",
                                     placeholder = "Add contact names",
                                 )
+
+                                MultipleContactPicker(
+                                    onContactsPicked = { contacts ->
+                                        selectedContacts = contacts
+                                        state.selectedContacts.value = selectedContacts
+                                    }
+                                )
                             }
                         }
                     }
                 }
             }
-
         }
     }
 

@@ -18,12 +18,12 @@ fun CircularAvatar(text: String, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .size(40.dp)
-            .background(MaterialTheme.colorScheme.surface, CircleShape),
+            .background(MaterialTheme.colorScheme.background, CircleShape),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = text.take(1).uppercase(),
-            color = Color.Black,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
             style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
         )
     }
