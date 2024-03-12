@@ -10,7 +10,7 @@ data class UpsertCustomMessageState(
     val receivedMessage : MutableState<String> = mutableStateOf(""),
     val replyMessage : MutableState<String> = mutableStateOf(""),
     val isActive : MutableState<Boolean> = mutableStateOf(true),
-    val receivedPattern : MutableState<ReceivedPattern> = mutableStateOf(ReceivedPattern.ExactMatch),
+    val receivedPattern : MutableState<ReceivedPattern> = mutableStateOf(ReceivedPattern.AnyMessage),
     val replyToOption: MutableState<ReplyToOption> = mutableStateOf(ReplyToOption.All),
     val selectedContacts : MutableState<List<String>> = mutableStateOf(emptyList()),
     val replyWithChatGPT : MutableState<Boolean> = mutableStateOf(false),

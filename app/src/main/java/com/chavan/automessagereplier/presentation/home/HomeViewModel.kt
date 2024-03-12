@@ -1,5 +1,6 @@
 package com.chavan.automessagereplier.presentation.home
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -34,8 +35,7 @@ class HomeViewModel @Inject constructor(
     private val _state: MutableStateFlow<HomeScreenState> = MutableStateFlow(HomeScreenState())
     val state: StateFlow<HomeScreenState> = _state.asStateFlow()
 
-    private val _autoMessengerActiveState = mutableStateOf(false)
-    val autoMessengerActiveState: State<Boolean> = _autoMessengerActiveState
+    val _autoMessengerActiveState = mutableStateOf(false)
 
     private val _uiEvent = MutableSharedFlow<UiEvent>()
     val uiEvent: SharedFlow<UiEvent> = _uiEvent

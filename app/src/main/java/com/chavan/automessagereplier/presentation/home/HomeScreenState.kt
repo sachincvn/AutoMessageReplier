@@ -7,5 +7,6 @@ import com.chavan.automessagereplier.domain.model.CustomMessage
 
 data class HomeScreenState(
   val result: ScreenState<List<CustomMessage>> = ScreenState.Success(emptyList()),
-  val activeAutoMessage : MutableState<Boolean> = mutableStateOf(true)
+  val activeAutoMessage : MutableState<Boolean> = mutableStateOf(true),
+  val isAutoMessagingActive : Boolean = true
 )

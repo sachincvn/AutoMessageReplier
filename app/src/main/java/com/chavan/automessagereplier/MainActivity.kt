@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.chavan.automessagereplier.notification_service.NotificationUtils
 import com.chavan.automessagereplier.presentation.custom_message.UpsertCustomMessageScreen
 import com.chavan.automessagereplier.presentation.home.HomeScreen
 import com.chavan.automessagereplier.ui.theme.AutoMessageReplierTheme
@@ -21,6 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        NotificationUtils.requestNotificationPermission(this, packageName)
         super.onCreate(savedInstanceState)
         setContent {
             AutoMessageReplierTheme{

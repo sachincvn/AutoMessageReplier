@@ -16,6 +16,7 @@ data class CustomMessageEntity(
 )
 
 enum class ReceivedPattern(val value: String? = null){
+    AnyMessage("Any message"),
     ExactMatch("Exact match"),
     Contains("Contains"),
     StartsWith("Starts with"),

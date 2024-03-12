@@ -1,0 +1,107 @@
+package com.chavan.automessagereplier.notification_service
+
+import android.app.Notification
+import android.app.PendingIntent
+import android.content.Intent
+import android.os.Bundle
+import android.service.notification.NotificationListenerService
+import android.service.notification.StatusBarNotification
+import android.util.Log
+import com.chavan.automessagereplier.domain.usecase.AutoMessageReplierUseCase
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@AndroidEntryPoint
+class NotificationService : NotificationListenerService() {
+
+    private var lastNotificationTitle: CharSequence? = null
+    private var lastNotificationTime: Long = 0
+
+    @Inject
+    lateinit var autoMessageReplierUseCase: AutoMessageReplierUseCase
+
+    override fun onCreate() {
+        super.onCreate()
+    }
+    override fun onNotificationPosted(sbn: StatusBarNotification) {
+        CoroutineScope(Dispatchers.IO).launch {
+            if (!autoMessageReplierUseCase.isServiceEnabled()) {
+                return@launch
+            }
+            val currentTime = System.currentTimeMillis()
+            val currentTitle = sbn.notification.extras.getCharSequence(Notification.EXTRA_TITLE)
+
+            if (currentTitle != null && currentTitle == lastNotificationTitle &&
+                (currentTime - lastNotificationTime) < 3000
+            ) {
+                return@launch
+            } else {
+                handleNotification(sbn)
+            }
+        }
+    }
+
+    private fun handleNotification(sbn: StatusBarNotification) {
+        CoroutineScope(Dispatchers.IO).launch {
+            if ("com.whatsapp" == sbn.packageName) {
+                val notificationTitle = sbn.notification.extras.getCharSequence(Notification.EXTRA_TITLE)
+                val notificationText = sbn.notification.extras.getCharSequence(Notification.EXTRA_TEXT)
+                val message = autoMessageReplierUseCase.replyMessage(notificationTitle.toString(),notificationText.toString())
+
+                if (message!=null){
+                    sendReply(sbn=sbn, message = message)
+                }
+                else{
+                    return@launch
+                }
+            }
+            updateLastNotification(sbn)
+        }
+    }
+
+
+    private fun sendReply(
+        sbn: StatusBarNotification,
+        message : String
+    ) {
+        val (_, pendingIntent, remoteInput) = NotificationUtils.extractWearNotification(sbn)
+        if (remoteInput.isEmpty()) {
+            return
+        }
+
+        val remoteInputs = arrayOfNulls<androidx.core.app.RemoteInput>(remoteInput.size)
+        val localIntent = Intent()
+        localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        val localBundle = Bundle()
+
+
+        for ((i, remoteIn) in remoteInput.withIndex()) {
+            remoteInputs[i] = remoteIn
+            localBundle.putCharSequence(
+                remoteInputs[i]!!.resultKey,
+                message
+            )
+        }
+
+        androidx.core.app.RemoteInput.addResultsToIntent(remoteInputs, localIntent, localBundle)
+        try {
+            if (pendingIntent != null) {
+                pendingIntent.send(this, 0, localIntent)
+                cancelNotification(sbn.key)
+            }
+        } catch (e: PendingIntent.CanceledException) {
+            Log.e("Error", "Error while replying to last notification : " + e.localizedMessage)
+        }
+    }
+
+
+    private fun updateLastNotification(sbn: StatusBarNotification) {
+        lastNotificationTitle = sbn.notification.extras.getCharSequence(Notification.EXTRA_TITLE)
+        lastNotificationTime = System.currentTimeMillis()
+    }
+
+}

@@ -29,7 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,7 +42,6 @@ import com.chavan.automessagereplier.core.utils.ScreenState
 import com.chavan.automessagereplier.presentation.UiEvent
 import com.chavan.automessagereplier.presentation.home.components.ReplyEmailListItem
 import kotlinx.coroutines.flow.collectLatest
-import okhttp3.internal.wait
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -53,7 +51,7 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by homeViewModel.state.collectAsState()
-    val isAutoMessengerActive by remember { homeViewModel.autoMessengerActiveState }
+    var isAutoMessengerActive by remember { homeViewModel._autoMessengerActiveState }
 
     val snackBarHostState = remember { SnackbarHostState() }
 
@@ -95,6 +93,7 @@ fun HomeScreen(
                     Switch(
                         checked = isAutoMessengerActive,
                         onCheckedChange = {
+                            isAutoMessengerActive = it
                             homeViewModel.onEvent(HomeScreenEvents.ToggleAutoReplier(it))
                         },
                         colors = SwitchDefaults.colors(
