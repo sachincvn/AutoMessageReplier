@@ -16,5 +16,5 @@ abstract class RepositoryModule {
     @Singleton
     abstract fun bindCustomMessageRepo(
         customMessageRepoImpl: CustomMessageRepoImpl
-    ) : CustomMessageRepo
+    ): CustomMessageRepo
 }

@@ -1,6 +1,5 @@
 package com.chavan.automessagereplier.data.local
 
-import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -16,5 +15,5 @@ import com.chavan.automessagereplier.core.utils.Converters
 )
 @TypeConverters(Converters::class)
 abstract class CustomMessageDatabase : RoomDatabase() {
-        abstract val dao: CustomMessageDao
+    abstract val dao: CustomMessageDao
 }

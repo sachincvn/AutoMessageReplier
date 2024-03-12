@@ -5,17 +5,17 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class CustomMessageEntity(
-    val receivedMessage : String,
-    val replyMessage : String,
-    val isActive : Boolean = false,
-    val receivedPattern : ReceivedPattern = ReceivedPattern.ExactMatch,
+    val receivedMessage: String,
+    val replyMessage: String,
+    val isActive: Boolean = false,
+    val receivedPattern: ReceivedPattern = ReceivedPattern.ExactMatch,
     val replyToOption: ReplyToOption = ReplyToOption.SavedContact,
-    val selectedContacts : List<String> = emptyList(),
+    val selectedContacts: List<String> = emptyList(),
     @PrimaryKey(autoGenerate = true)
-    val id : Long = 0
+    val id: Long = 0
 )
 
-enum class ReceivedPattern(val value: String? = null){
+enum class ReceivedPattern(val value: String? = null) {
     AnyMessage("Any message"),
     ExactMatch("Exact match"),
     Contains("Contains"),
@@ -24,7 +24,7 @@ enum class ReceivedPattern(val value: String? = null){
     SimilarMatch("Similar match")
 }
 
-enum class ReplyToOption(val value: String? = null){
+enum class ReplyToOption(val value: String? = null) {
     All("Everyone"),
     SavedContact("Saved contact"),
     UnknownContact("Unknown Contact"),

@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
@@ -22,10 +21,10 @@ fun CircularAvatar(text: String, modifier: Modifier = Modifier) {
             .background(MaterialTheme.colorScheme.surface, CircleShape),
         contentAlignment = Alignment.Center
     ) {
-       Text(
-           text = text.take(1).uppercase(),
-           color = Color.Black,
-           style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
-       )
+        Text(
+            text = text.take(1).uppercase(),
+            color = Color.Black,
+            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+        )
     }
 }

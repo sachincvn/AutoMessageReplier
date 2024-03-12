@@ -43,9 +43,11 @@ class UpsertCustomMessageViewModel @Inject constructor(
                     upsCustomMessageUseCase(event.customMessage).collectLatest {
                         when (it) {
                             is Resource.Error -> {
-                                _uiEvent.emit(UiEvent.ShowSnackbar(
-                                    it.message ?: "Error deleting message"
-                                ))
+                                _uiEvent.emit(
+                                    UiEvent.ShowSnackbar(
+                                        it.message ?: "Error deleting message"
+                                    )
+                                )
                                 _state.value =
                                     _state.value.copy(isLoading = false, error = it.message)
                             }
@@ -68,11 +70,11 @@ class UpsertCustomMessageViewModel @Inject constructor(
     }
 
     private suspend fun isValidForm(customMessage: CustomMessage): Boolean {
-        if (customMessage.receivedMessage.isBlank()){
+        if (customMessage.receivedMessage.isBlank()) {
             _uiEvent.emit(UiEvent.ShowSnackbar("Received message is empty"))
             return false
         }
-        if (customMessage.replyMessage.isBlank()){
+        if (customMessage.replyMessage.isBlank()) {
             _uiEvent.emit(UiEvent.ShowSnackbar("Received message is empty"))
             return false
         }

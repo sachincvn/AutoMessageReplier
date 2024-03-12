@@ -8,7 +8,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
@@ -19,9 +18,9 @@ import com.chavan.automessagereplier.ui.theme.MontserratFontFamily
 @Composable
 fun UpsertTextField(
     value: String,
-    onTextChanged : (String) -> Unit,
+    onTextChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
-    label : String = "Name",
+    label: String = "Name",
     placeholder: String = "Enter $label"
 ) {
     Text(
@@ -32,10 +31,11 @@ fun UpsertTextField(
     )
     OutlinedTextField(
         value = value,
-        onValueChange = {onTextChanged(it)},
+        onValueChange = { onTextChanged(it) },
         singleLine = true,
         visualTransformation = VisualTransformation.None,
-        modifier = Modifier.height(60.dp)
+        modifier = Modifier
+            .height(60.dp)
             .fillMaxWidth()
             .padding(top = 3.dp, bottom = 5.dp),
         textStyle = TextStyle(

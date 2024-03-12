@@ -57,9 +57,11 @@ class HomeViewModel @Inject constructor(
                                 it.message ?: "Something went wrong"
                             )
                         )
+
                         is Resource.Success -> {
                             _state.value = _state.value.copy(isAutoMessagingActive = active)
                         }
+
                         else -> return@collectLatest
                     }
                 }
@@ -126,6 +128,7 @@ class HomeViewModel @Inject constructor(
                             it.message ?: "Something went wrong"
                         )
                     )
+
                     is Resource.Success -> {
                         _state.value = _state.value.copy(isAutoMessagingActive = it.data!!.isActive)
                     }
@@ -139,15 +142,22 @@ class HomeViewModel @Inject constructor(
     private fun getAllCustomMessages() {
         viewModelScope.launch {
             getAllCustomMessagesUseCase().collectLatest { result ->
-                when(result){
+                when (result) {
                     is Resource.Error -> {
-                        _state.value = _state.value.copy(isLoading = false, errorMessage = result.message)
+                        _state.value =
+                            _state.value.copy(isLoading = false, errorMessage = result.message)
                     }
-                    is Resource.Loading ->{
+
+                    is Resource.Loading -> {
                         _state.value = _state.value.copy(isLoading = true, errorMessage = null)
                     }
+
                     is Resource.Success -> {
-                        _state.value = _state.value.copy(isLoading = false, errorMessage = null, customMessages = result.data!!)
+                        _state.value = _state.value.copy(
+                            isLoading = false,
+                            errorMessage = null,
+                            customMessages = result.data!!
+                        )
                     }
                 }
             }

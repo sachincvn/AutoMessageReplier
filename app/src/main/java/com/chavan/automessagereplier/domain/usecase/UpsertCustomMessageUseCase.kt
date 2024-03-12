@@ -10,14 +10,13 @@ import javax.inject.Inject
 class UpsertCustomMessageUseCase @Inject constructor(
     private val customMessageRepo: CustomMessageRepo
 ) {
-    suspend operator fun invoke(customMessage: CustomMessage) : Flow<Resource<Boolean>> {
+    suspend operator fun invoke(customMessage: CustomMessage): Flow<Resource<Boolean>> {
         return flow {
             emit(Resource.Loading())
             try {
                 customMessageRepo.upsertCustomMessage(customMessage)
                 emit(Resource.Success(true))
-            }
-            catch (ex : Exception){
+            } catch (ex: Exception) {
                 ex.printStackTrace()
                 emit(Resource.Error("Error while fetching : ${ex.message}"))
             }

@@ -11,11 +11,11 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class AppModule{
+class AppModule {
 
     @Provides
     @Singleton
-    fun providesCustomMessageDatabase(app : Application) : CustomMessageDatabase {
+    fun providesCustomMessageDatabase(app: Application): CustomMessageDatabase {
         return Room.databaseBuilder(
             app,
             CustomMessageDatabase::class.java,

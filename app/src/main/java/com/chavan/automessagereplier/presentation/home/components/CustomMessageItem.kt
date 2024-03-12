@@ -67,7 +67,8 @@ fun ReplyEmailListItem(
                 .fillMaxWidth()
                 .padding(20.dp)
         ) {
-            Row(modifier = Modifier.fillMaxWidth(),
+            Row(
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 val clickModifier = Modifier.clickable(
@@ -90,16 +91,17 @@ fun ReplyEmailListItem(
                         style = MaterialTheme.typography.labelMedium
                     )
                     Text(
-                        text = if(customMessage.isActive) "active" else "in-active",
+                        text = if (customMessage.isActive) "active" else "in-active",
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.outline
                     )
                 }
-                Checkbox(customMessage.isActive, onCheckedChange = { toggleSelection()  })
+                Checkbox(customMessage.isActive, onCheckedChange = { toggleSelection() })
 
             }
 
-            Text("Received message: ${customMessage.receivedMessage}",
+            Text(
+                "Received message: ${customMessage.receivedMessage}",
                 maxLines = 1,
                 style = MaterialTheme.typography.bodyMedium,
                 overflow = TextOverflow.Ellipsis,
@@ -107,13 +109,14 @@ fun ReplyEmailListItem(
                 else MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
             )
-            Text("Reply message:  ${customMessage.replyMessage}",
+            Text(
+                "Reply message:  ${customMessage.replyMessage}",
                 maxLines = 1,
                 style = MaterialTheme.typography.bodyMedium,
                 overflow = TextOverflow.Ellipsis,
                 color = if (customMessage.isActive) MaterialTheme.colorScheme.onPrimaryContainer
                 else MaterialTheme.colorScheme.onSurface,
-                )
+            )
         }
     }
 }

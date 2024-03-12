@@ -31,7 +31,7 @@ fun FieldWrapper(
                 color = MaterialTheme.colorScheme.inverseOnSurface
             )
             .padding(10.dp),
-        ){
+    ) {
         content()
     }
 

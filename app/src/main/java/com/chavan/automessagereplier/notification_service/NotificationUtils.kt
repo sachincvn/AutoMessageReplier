@@ -14,7 +14,8 @@ object NotificationUtils {
     private const val MAX_OLD_NOTIFICATION_CAN_BE_REPLIED_TIME_MS = 2 * 60 * 1000
 
     fun extractWearNotification(statusBarNotification: StatusBarNotification): NotificationWear {
-        val wearableExtender = NotificationCompat.WearableExtender(statusBarNotification.notification)
+        val wearableExtender =
+            NotificationCompat.WearableExtender(statusBarNotification.notification)
         val actions = wearableExtender.actions
         val remoteInputs: MutableList<androidx.core.app.RemoteInput> = ArrayList(actions.size)
         var pendingIntent: PendingIntent? = null
@@ -46,13 +47,13 @@ object NotificationUtils {
                 System.currentTimeMillis() - sbn.notification.`when` < MAX_OLD_NOTIFICATION_CAN_BE_REPLIED_TIME_MS
     }
 
-    private fun isNotificationAccessGranted(context: Context,packageName:String): Boolean {
+    private fun isNotificationAccessGranted(context: Context, packageName: String): Boolean {
         val notificationListenerSet = NotificationManagerCompat.getEnabledListenerPackages(context)
         return notificationListenerSet.contains(packageName)
     }
 
-    fun requestNotificationPermission(context: Context,packageName:String) {
-        if (!isNotificationAccessGranted(context,packageName)) {
+    fun requestNotificationPermission(context: Context, packageName: String) {
+        if (!isNotificationAccessGranted(context, packageName)) {
             val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
             context.startActivity(intent)
         }

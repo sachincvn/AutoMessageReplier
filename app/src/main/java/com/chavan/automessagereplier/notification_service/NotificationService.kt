@@ -11,7 +11,6 @@ import com.chavan.automessagereplier.domain.usecase.AutoMessageReplierUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,6 +26,7 @@ class NotificationService : NotificationListenerService() {
     override fun onCreate() {
         super.onCreate()
     }
+
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         CoroutineScope(Dispatchers.IO).launch {
             if (!autoMessageReplierUseCase.isServiceEnabled()) {
@@ -48,14 +48,18 @@ class NotificationService : NotificationListenerService() {
     private fun handleNotification(sbn: StatusBarNotification) {
         CoroutineScope(Dispatchers.IO).launch {
             if ("com.whatsapp" == sbn.packageName) {
-                val notificationTitle = sbn.notification.extras.getCharSequence(Notification.EXTRA_TITLE)
-                val notificationText = sbn.notification.extras.getCharSequence(Notification.EXTRA_TEXT)
-                val message = autoMessageReplierUseCase.replyMessage(notificationTitle.toString(),notificationText.toString())
+                val notificationTitle =
+                    sbn.notification.extras.getCharSequence(Notification.EXTRA_TITLE)
+                val notificationText =
+                    sbn.notification.extras.getCharSequence(Notification.EXTRA_TEXT)
+                val message = autoMessageReplierUseCase.replyMessage(
+                    notificationTitle.toString(),
+                    notificationText.toString()
+                )
 
-                if (message!=null){
-                    sendReply(sbn=sbn, message = message)
-                }
-                else{
+                if (message != null) {
+                    sendReply(sbn = sbn, message = message)
+                } else {
                     return@launch
                 }
             }
@@ -66,7 +70,7 @@ class NotificationService : NotificationListenerService() {
 
     private fun sendReply(
         sbn: StatusBarNotification,
-        message : String
+        message: String
     ) {
         val (_, pendingIntent, remoteInput) = NotificationUtils.extractWearNotification(sbn)
         if (remoteInput.isEmpty()) {
