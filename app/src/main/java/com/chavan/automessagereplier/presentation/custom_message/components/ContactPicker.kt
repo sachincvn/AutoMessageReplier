@@ -1,4 +1,4 @@
-package com.chavan.automessagereplier.presentation.custom_message
+package com.chavan.automessagereplier.presentation.custom_message.components
 
 
 import android.content.ContentResolver

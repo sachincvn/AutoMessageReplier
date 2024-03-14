@@ -1,6 +1,6 @@
 package com.chavan.automessagereplier.presentation.custom_message
 
-import com.chavan.automessagereplier.data.local.ReceivedPattern
+import com.chavan.automessagereplier.data.local.custom_message.ReceivedPattern
 import com.chavan.automessagereplier.domain.model.CustomMessage
 
 sealed class UpsertCustomMessageEvents {

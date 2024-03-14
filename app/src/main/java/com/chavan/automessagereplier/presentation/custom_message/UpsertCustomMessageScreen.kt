@@ -47,10 +47,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.chavan.automessagereplier.data.local.ReplyToOption
+import com.chavan.automessagereplier.data.local.custom_message.ReplyToOption
 import com.chavan.automessagereplier.domain.model.CustomMessage
 import com.chavan.automessagereplier.presentation.UiEvent
 import com.chavan.automessagereplier.presentation.custom_message.components.FieldWrapper
+import com.chavan.automessagereplier.presentation.custom_message.components.MultipleContactPicker
 import com.chavan.automessagereplier.presentation.custom_message.components.OpenAiSettingBottomSheet
 import com.chavan.automessagereplier.presentation.custom_message.components.UpsertTextField
 import kotlinx.coroutines.flow.collectLatest

@@ -1,6 +1,6 @@
 package com.chavan.automessagereplier.data.mapper
 
-import com.chavan.automessagereplier.data.local.CustomMessageEntity
+import com.chavan.automessagereplier.data.local.custom_message.CustomMessageEntity
 import com.chavan.automessagereplier.domain.model.CustomMessage
 
 fun CustomMessageEntity.toCustomMessage(): CustomMessage {

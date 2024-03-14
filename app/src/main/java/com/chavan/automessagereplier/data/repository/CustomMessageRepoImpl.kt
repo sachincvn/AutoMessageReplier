@@ -14,7 +14,7 @@ class CustomMessageRepoImpl @Inject constructor(
     private val db: CustomMessageDatabase,
 ) : CustomMessageRepo {
 
-    private val dao = db.dao;
+    private val dao = db.customMessageDao;
     override suspend fun getCustomMessages(): List<CustomMessage> {
         return dao.getCustomMessages().map {
             it.toCustomMessage()

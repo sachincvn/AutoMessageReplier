@@ -1,4 +1,4 @@
-package com.chavan.automessagereplier.data.local
+package com.chavan.automessagereplier.data.local.custom_message
 
 import androidx.room.Dao
 import androidx.room.Query

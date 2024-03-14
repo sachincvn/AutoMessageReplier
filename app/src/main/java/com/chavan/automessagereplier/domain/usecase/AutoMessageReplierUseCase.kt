@@ -3,8 +3,8 @@ package com.chavan.automessagereplier.domain.usecase
 import android.app.Notification
 import android.service.notification.StatusBarNotification
 import com.chavan.automessagereplier.core.utils.StringChecker.isName
-import com.chavan.automessagereplier.data.local.ReceivedPattern
-import com.chavan.automessagereplier.data.local.ReplyToOption
+import com.chavan.automessagereplier.data.local.custom_message.ReceivedPattern
+import com.chavan.automessagereplier.data.local.custom_message.ReplyToOption
 import com.chavan.automessagereplier.data.remote.dto.openai.ChatRequestDTO
 import com.chavan.automessagereplier.data.remote.dto.openai.MessageX
 import com.chavan.automessagereplier.data.remote.services.openapi.IOpenaiGptApi

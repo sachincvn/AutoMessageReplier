@@ -2,8 +2,8 @@ package com.chavan.automessagereplier.presentation.custom_message
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import com.chavan.automessagereplier.data.local.ReceivedPattern
-import com.chavan.automessagereplier.data.local.ReplyToOption
+import com.chavan.automessagereplier.data.local.custom_message.ReceivedPattern
+import com.chavan.automessagereplier.data.local.custom_message.ReplyToOption
 import com.chavan.automessagereplier.domain.model.CustomMessage
 
 data class UpsertCustomMessageState(
