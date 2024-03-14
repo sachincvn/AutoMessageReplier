@@ -65,7 +65,7 @@ class AutoMessageReplierUseCase @Inject constructor(
         val chatRequestDTO = ChatRequestDTO(
             messages = listOf(MessageX(role = "user", content = message)),
             model = "gpt-3.5-turbo",
-            temperature = 0.7
+            temperature = 0.7,
         )
         val response = iOpenaiGptApi.getOpenAiResponse(chatRequestDTO)
         return response.choices.firstOrNull()?.message?.content

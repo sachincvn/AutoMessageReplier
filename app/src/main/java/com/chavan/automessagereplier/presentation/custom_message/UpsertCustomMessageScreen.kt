@@ -2,6 +2,7 @@ package com.chavan.automessagereplier.presentation.custom_message
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Checkbox
@@ -49,6 +51,7 @@ import com.chavan.automessagereplier.data.local.ReplyToOption
 import com.chavan.automessagereplier.domain.model.CustomMessage
 import com.chavan.automessagereplier.presentation.UiEvent
 import com.chavan.automessagereplier.presentation.custom_message.components.FieldWrapper
+import com.chavan.automessagereplier.presentation.custom_message.components.OpenAiSettingBottomSheet
 import com.chavan.automessagereplier.presentation.custom_message.components.UpsertTextField
 import kotlinx.coroutines.flow.collectLatest
 
@@ -61,6 +64,14 @@ fun UpsertCustomMessageScreen(
 ) {
     val state = upsertCustomMessageViewModel.state.value
     val snackBarHostState = remember { SnackbarHostState() }
+
+    var showSheet by remember { mutableStateOf(false) }
+
+    if (showSheet) {
+        OpenAiSettingBottomSheet() {
+            showSheet = false
+        }
+    }
 
     Scaffold(
         snackbarHost = {
@@ -185,6 +196,7 @@ fun UpsertCustomMessageScreen(
                                         state.replyWithChatGPT.value = !state.replyWithChatGPT.value
                                     },
                                 verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Checkbox(
                                     checked = state.replyWithChatGPT.value,
@@ -195,8 +207,18 @@ fun UpsertCustomMessageScreen(
                                 Text(
                                     text = "Reply with chat gpt",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    modifier = Modifier.padding(start = 8.dp)
+                                    modifier = Modifier.padding(start = 8.dp).weight(1f)
                                 )
+                                IconButton(
+                                    onClick = {
+                                        showSheet = true
+                                    },
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Settings,
+                                        contentDescription = "open ai setting"
+                                    )
+                                }
                             }
                             upsertCustomMessageViewModel.replyToOption.forEach { option ->
                                 Row(
