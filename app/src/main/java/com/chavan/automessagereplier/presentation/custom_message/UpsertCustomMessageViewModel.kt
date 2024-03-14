@@ -1,5 +1,7 @@
 package com.chavan.automessagereplier.presentation.custom_message
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chavan.automessagereplier.core.utils.Resource
@@ -8,6 +10,7 @@ import com.chavan.automessagereplier.data.local.ReplyToOption
 import com.chavan.automessagereplier.domain.model.CustomMessage
 import com.chavan.automessagereplier.domain.usecase.UpsertCustomMessageUseCase
 import com.chavan.automessagereplier.presentation.UiEvent
+import com.chavan.automessagereplier.presentation.home.HomeScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,9 +25,10 @@ import javax.inject.Inject
 class UpsertCustomMessageViewModel @Inject constructor(
     private val upsCustomMessageUseCase: UpsertCustomMessageUseCase
 ) : ViewModel() {
-    private val _state: MutableStateFlow<UpsertCustomMessageState> =
-        MutableStateFlow(UpsertCustomMessageState())
-    val state: StateFlow<UpsertCustomMessageState> = _state.asStateFlow()
+
+
+    private val _state = mutableStateOf(UpsertCustomMessageState())
+    val state: State<UpsertCustomMessageState> = _state
 
     private val _uiEvent = MutableSharedFlow<UiEvent>()
     val uiEvent: SharedFlow<UiEvent> = _uiEvent
@@ -75,6 +79,9 @@ class UpsertCustomMessageViewModel @Inject constructor(
             return false
         }
         if (customMessage.replyMessage.isBlank()) {
+            if (state.value.replyWithChatGPT.value){
+                return true
+            }
             _uiEvent.emit(UiEvent.ShowSnackbar("Received message is empty"))
             return false
         }

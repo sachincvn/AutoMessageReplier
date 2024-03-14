@@ -1,7 +1,7 @@
 package com.chavan.automessagereplier.domain.repository
 
 import com.chavan.automessagereplier.domain.model.CustomMessage
-import com.chavan.automessagereplier.domain.model.CustomMessageConfig
+import com.chavan.automessagereplier.domain.model.custom_message.CustomMessageConfig
 
 interface CustomMessageRepo {
     suspend fun getCustomMessages(): List<CustomMessage>

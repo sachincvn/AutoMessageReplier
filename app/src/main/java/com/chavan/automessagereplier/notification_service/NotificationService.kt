@@ -46,7 +46,7 @@ class NotificationService : NotificationListenerService() {
             if ("com.whatsapp" == sbn.packageName) {
                 val message = autoMessageReplierUseCase.getReplyMessage(sbn)
 
-                if (message != null) {
+                if (!message.isNullOrEmpty()) {
                     sendReply(sbn = sbn, message = message)
                 } else {
                     return@launch

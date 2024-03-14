@@ -11,6 +11,7 @@ data class CustomMessageEntity(
     val receivedPattern: ReceivedPattern = ReceivedPattern.ExactMatch,
     val replyToOption: ReplyToOption = ReplyToOption.SavedContact,
     val selectedContacts: List<String> = emptyList(),
+    val replyWithChatGptApi : Boolean = false,
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0
 )

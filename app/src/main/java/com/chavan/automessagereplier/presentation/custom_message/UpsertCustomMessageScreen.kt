@@ -2,6 +2,8 @@ package com.chavan.automessagereplier.presentation.custom_message
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +20,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -60,7 +63,7 @@ fun UpsertCustomMessageScreen(
     navigator: NavController,
     upsertCustomMessageViewModel: UpsertCustomMessageViewModel = hiltViewModel()
 ) {
-    val state by upsertCustomMessageViewModel.state.collectAsState()
+    val state = upsertCustomMessageViewModel.state.value
     val snackBarHostState = remember { SnackbarHostState() }
 
     Scaffold(
@@ -82,7 +85,8 @@ fun UpsertCustomMessageScreen(
                                 isActive = state.isActive.value,
                                 replyToOption = state.replyToOption.value,
                                 receivedPattern = state.receivedPattern.value,
-                                selectedContacts = state.selectedContacts.value
+                                selectedContacts = state.selectedContacts.value,
+                                replyWithChatGptApi = state.replyWithChatGPT.value
                             )
                         )
                     )
@@ -142,7 +146,7 @@ fun UpsertCustomMessageScreen(
 
                                     Text(
                                         text = option.value!!,
-                                        style = MaterialTheme.typography.bodySmall,
+                                        style = MaterialTheme.typography.bodyMedium,
                                         modifier = Modifier.padding(start = 8.dp)
                                     )
                                 }
@@ -156,9 +160,29 @@ fun UpsertCustomMessageScreen(
                                     state.replyMessage.value = it
                                 },
                                 label = "Reply Message",
-                                placeholder = "Enter reply message",
+                                placeholder = if(!state.replyWithChatGPT.value) "Enter reply message" else "Message will be auto generated",
+                                isEnabled = !state.replyWithChatGPT.value
                             )
-
+                            Row(
+                                modifier = Modifier.fillMaxWidth()
+                                    .clickable {
+                                        state.replyMessage.value = ""
+                                        state.replyWithChatGPT.value = !state.replyWithChatGPT.value
+                                    },
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Checkbox(
+                                    checked = state.replyWithChatGPT.value,
+                                    onCheckedChange = {
+                                        state.replyWithChatGPT.value = it
+                                    }
+                                )
+                                Text(
+                                    text = "Reply with chat gpt",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    modifier = Modifier.padding(start = 8.dp)
+                                )
+                            }
                             upsertCustomMessageViewModel.replyToOption.forEach { option ->
                                 Row(
                                     modifier = Modifier
@@ -177,7 +201,7 @@ fun UpsertCustomMessageScreen(
 
                                     Text(
                                         text = option.value!!,
-                                        style = MaterialTheme.typography.bodySmall,
+                                        style = MaterialTheme.typography.bodyMedium,
                                         modifier = Modifier.padding(start = 8.dp)
                                     )
                                 }
@@ -232,7 +256,7 @@ private fun TopAppBar(
     navigator: NavController,
     viewModel: UpsertCustomMessageViewModel
 ) {
-    val state by viewModel.state.collectAsState()
+    val state = viewModel.state.value
     CenterAlignedTopAppBar(
         title = {
             Text(

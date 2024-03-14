@@ -4,9 +4,8 @@ import com.chavan.automessagereplier.data.local.CustomMessageDatabase
 import com.chavan.automessagereplier.data.mapper.toCustomMessage
 import com.chavan.automessagereplier.data.mapper.toCustomMessageEntity
 import com.chavan.automessagereplier.domain.model.CustomMessage
-import com.chavan.automessagereplier.domain.model.CustomMessageConfig
+import com.chavan.automessagereplier.domain.model.custom_message.CustomMessageConfig
 import com.chavan.automessagereplier.domain.repository.CustomMessageRepo
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 import javax.inject.Singleton
 

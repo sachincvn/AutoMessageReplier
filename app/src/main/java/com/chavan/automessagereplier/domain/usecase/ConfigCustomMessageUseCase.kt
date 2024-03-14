@@ -1,7 +1,7 @@
 package com.chavan.automessagereplier.domain.usecase
 
 import com.chavan.automessagereplier.core.utils.Resource
-import com.chavan.automessagereplier.domain.model.CustomMessageConfig
+import com.chavan.automessagereplier.domain.model.custom_message.CustomMessageConfig
 import com.chavan.automessagereplier.domain.repository.CustomMessageRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

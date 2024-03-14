@@ -10,5 +10,6 @@ data class CustomMessage(
     val replyToOption: ReplyToOption = ReplyToOption.SavedContact,
     val isActive: Boolean = false,
     val selectedContacts: List<String> = emptyList(),
+    val replyWithChatGptApi : Boolean = false,
     val id: Long = 0
 )

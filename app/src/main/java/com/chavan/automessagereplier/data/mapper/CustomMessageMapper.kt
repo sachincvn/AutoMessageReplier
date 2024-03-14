@@ -11,7 +11,8 @@ fun CustomMessageEntity.toCustomMessage(): CustomMessage {
         isActive = isActive,
         receivedPattern = receivedPattern,
         replyToOption = replyToOption,
-        selectedContacts = selectedContacts
+        selectedContacts = selectedContacts,
+        replyWithChatGptApi = replyWithChatGptApi
     )
 }
 
@@ -23,6 +24,7 @@ fun CustomMessage.toCustomMessageEntity(): CustomMessageEntity {
         isActive = isActive,
         receivedPattern = receivedPattern,
         replyToOption = replyToOption,
-        selectedContacts = selectedContacts
+        selectedContacts = selectedContacts,
+        replyWithChatGptApi = replyWithChatGptApi
     )
 }

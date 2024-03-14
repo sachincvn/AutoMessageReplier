@@ -21,11 +21,12 @@ fun UpsertTextField(
     onTextChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
     label: String = "Name",
-    placeholder: String = "Enter $label"
+    placeholder: String = "Enter $label",
+    isEnabled : Boolean = true
 ) {
     Text(
         text = label,
-        style = MaterialTheme.typography.labelLarge,
+        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium),
         color = MaterialTheme.colorScheme.onBackground,
         modifier = Modifier.padding(top = 10.dp, bottom = 4.dp)
     )
@@ -48,6 +49,7 @@ fun UpsertTextField(
                 text = placeholder,
                 style = MaterialTheme.typography.bodySmall
             )
-        }
+        },
+        enabled = isEnabled
     )
 }
