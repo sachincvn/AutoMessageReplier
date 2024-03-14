@@ -7,7 +7,7 @@ import com.chavan.automessagereplier.data.local.ReplyToOption
 import com.chavan.automessagereplier.domain.model.CustomMessage
 
 data class UpsertCustomMessageState(
-    val receivedMessage: MutableState<String> = mutableStateOf(""),
+    val receivedMessage: MutableState<String> = mutableStateOf("*"),
     val replyMessage: MutableState<String> = mutableStateOf(""),
     val isActive: MutableState<Boolean> = mutableStateOf(true),
     val receivedPattern: MutableState<ReceivedPattern> = mutableStateOf(ReceivedPattern.AnyMessage),

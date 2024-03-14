@@ -6,6 +6,6 @@ object Constants {
 
     const val openApiBaseUrl = "https://api.openai.com/"
 
-    const val openApiKey = "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"
+    const val openApiKey = "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"
 
 }

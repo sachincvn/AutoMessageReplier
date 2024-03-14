@@ -1,9 +1,7 @@
 package com.chavan.automessagereplier.presentation.custom_message
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,14 +34,12 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -122,6 +118,11 @@ fun UpsertCustomMessageScreen(
                                 value = state.receivedMessage.value,
                                 onTextChanged = {
                                     state.receivedMessage.value = it
+                                    upsertCustomMessageViewModel.onEvent(
+                                        UpsertCustomMessageEvents.OnReceivedMessageChange(
+                                            it
+                                        )
+                                    )
                                 },
                                 label = "Received Message",
                                 placeholder = "Enter received message",
@@ -134,13 +135,26 @@ fun UpsertCustomMessageScreen(
                                         .fillMaxWidth()
                                         .selectable(
                                             selected = (option == state.receivedPattern.value),
-                                            onClick = { state.receivedPattern.value = option }
+                                            onClick = {
+                                                upsertCustomMessageViewModel.onEvent(
+                                                    UpsertCustomMessageEvents.OnReceivedPatterChange(
+                                                        option
+                                                    )
+                                                )
+                                            }
                                         ),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     RadioButton(
                                         selected = (option == state.receivedPattern.value),
-                                        onClick = { state.receivedPattern.value = option },
+                                        onClick = {
+                                            state.receivedPattern.value = option
+                                            upsertCustomMessageViewModel.onEvent(
+                                                UpsertCustomMessageEvents.OnReceivedPatterChange(
+                                                    option
+                                                )
+                                            )
+                                        },
                                         colors = RadioButtonDefaults.colors(selectedColor = MaterialTheme.colorScheme.primary)
                                     )
 
@@ -160,11 +174,12 @@ fun UpsertCustomMessageScreen(
                                     state.replyMessage.value = it
                                 },
                                 label = "Reply Message",
-                                placeholder = if(!state.replyWithChatGPT.value) "Enter reply message" else "Message will be auto generated",
+                                placeholder = if (!state.replyWithChatGPT.value) "Enter reply message" else "Message will be auto generated",
                                 isEnabled = !state.replyWithChatGPT.value
                             )
                             Row(
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier
+                                    .fillMaxWidth()
                                     .clickable {
                                         state.replyMessage.value = ""
                                         state.replyWithChatGPT.value = !state.replyWithChatGPT.value
@@ -211,12 +226,16 @@ fun UpsertCustomMessageScreen(
                         if (state.replyToOption.value == ReplyToOption.SpecificContacts) {
                             Spacer(modifier = Modifier.height(20.dp))
                             FieldWrapper {
-                                var selectedContacts by remember { mutableStateOf<List<String>>(emptyList()) }
+                                var selectedContacts by remember {
+                                    mutableStateOf<List<String>>(
+                                        emptyList()
+                                    )
+                                }
 
                                 UpsertTextField(
-                                    value = state.receivedMessage.value,
+                                    value = "",
                                     onTextChanged = {
-                                        state.receivedMessage.value = it
+                                        state.replyMessage.value = ""
                                     },
                                     label = "Select contacts",
                                     placeholder = "Add contact names",
