@@ -7,7 +7,11 @@ import android.provider.ContactsContract
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Contacts
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -31,21 +35,15 @@ fun MultipleContactPicker(
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(
-            onClick = {
-                // Launch the contact picker activity
-                val intent = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-                getContent.launch(intent)
-            }
-        ) {
-            Text("Pick Contact")
-        }
+    IconButton(onClick = {
+        val intent = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        getContent.launch(intent)
+    }) {
+        Icon(
+            imageVector = Icons.Default.Contacts,
+            contentDescription = "Contacts"
+        )
     }
 }
 
@@ -61,10 +59,4 @@ fun getContactsFromUri(contentResolver: ContentResolver, uri: android.net.Uri): 
         }
     }
     return contacts
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewMultipleContactPicker() {
-    MultipleContactPicker {}
 }

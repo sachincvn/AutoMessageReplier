@@ -279,22 +279,16 @@ fun UpsertCustomMessageScreen(
                                         state.selectedContactName.value = it
                                     },
                                     label = "Select contacts",
-                                    placeholder = "Add contact names",
+                                    placeholder = "Contact Name",
+                                    readOnly = true,
                                     trailingIcon = {
-                                        IconButton(onClick = { /*TODO*/ }) {
-                                            Icon(
-                                                imageVector = Icons.Default.Contacts,
-                                                contentDescription = "Contacts"
-                                            )
-                                        }
-                                    }
-                                )
-
-                                MultipleContactPicker(
-                                    onContactsPicked = { contacts ->
-                                        selectedContacts = contacts
-                                        state.selectedContacts.value = selectedContacts
-                                        state.selectedContactName.value = selectedContacts.first()
+                                        MultipleContactPicker(
+                                            onContactsPicked = { contacts ->
+                                                selectedContacts = contacts
+                                                state.selectedContacts.value = selectedContacts
+                                                state.selectedContactName.value = selectedContacts.first()
+                                            }
+                                        )
                                     }
                                 )
                             }

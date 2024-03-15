@@ -28,6 +28,7 @@ fun UpsertTextField(
     errorMessage: String? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
     isError : Boolean = false,
+    readOnly : Boolean = false,
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
     Text(
@@ -59,6 +60,7 @@ fun UpsertTextField(
             )
         },
         trailingIcon = trailingIcon,
-        enabled = isEnabled
+        enabled = isEnabled,
+        readOnly = readOnly
     )
 }
