@@ -1,23 +1,5 @@
-/*
- * Copyright 2022 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.chavan.automessagereplier.presentation.home.components
 
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -33,10 +15,8 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.RemoveCircleOutline
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,12 +24,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.chavan.automessagereplier.data.local.custom_message.ReplyToOption
 import com.chavan.automessagereplier.domain.model.CustomMessage
 
 @Composable
@@ -86,7 +66,14 @@ fun CustomMessageItem(
                     navigateToDetail(customMessage.id)
                 }
 
-                CircularAvatar(text = customMessage.replyToOption.value!!)
+                CircularAvatar(
+                    text =
+                    if ((customMessage.replyToOption == ReplyToOption.SpecificContacts)
+                        && (customMessage.selectedContacts[0].isNotBlank())
+                    )
+                        customMessage.selectedContacts[0]
+                    else customMessage.replyToOption.value!!
+                )
 
                 Column(
                     modifier = Modifier
@@ -95,7 +82,11 @@ fun CustomMessageItem(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = customMessage.replyToOption.value,
+                        text = if ((customMessage.replyToOption == ReplyToOption.SpecificContacts)
+                            && (customMessage.selectedContacts[0].isNotBlank())
+                        )
+                            "To : ${customMessage.selectedContacts[0]}"
+                        else customMessage.replyToOption.value!!,
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
@@ -105,17 +96,18 @@ fun CustomMessageItem(
                         color = if (customMessage.isActive) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onErrorContainer
                     )
                 }
-//                Checkbox(customMessage.isActive, onCheckedChange = { toggleSelection() })
                 IconButton(onClick = toggleDelete) {
-                    Icon(imageVector = Icons.Outlined.Delete,
+                    Icon(
+                        imageVector = Icons.Outlined.Delete,
                         contentDescription = "Delete",
                         tint = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 }
                 IconButton(
-                    onClick =  toggleActive,
+                    onClick = toggleActive,
                 ) {
-                    Icon(imageVector = if (customMessage.isActive) Icons.Outlined.CheckCircle else Icons.Outlined.RemoveCircleOutline,
+                    Icon(
+                        imageVector = if (customMessage.isActive) Icons.Outlined.CheckCircle else Icons.Outlined.RemoveCircleOutline,
                         contentDescription = "Check",
                         tint = if (customMessage.isActive) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.error
                     )
@@ -132,7 +124,9 @@ fun CustomMessageItem(
                 modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
             )
             Text(
-                "Reply message:  ${customMessage.replyMessage}",
+                if (customMessage.replyWithChatGptApi)
+                    "Reply message:  Message will be auto generated by openai"
+                else "Reply message:  ${customMessage.replyMessage}",
                 maxLines = 1,
                 style = MaterialTheme.typography.bodyMedium,
                 overflow = TextOverflow.Ellipsis,
@@ -146,17 +140,18 @@ fun CustomMessageItem(
 
 @Preview(showSystemUi = true)
 @Composable
-fun CustomMessageItemPreview(){
+fun CustomMessageItemPreview() {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(vertical = 10.dp)
-    ){
+    ) {
         CustomMessageItem(
             customMessage = CustomMessage(
                 receivedMessage = "Hello",
                 replyMessage = "Welcome",
-                isActive = true),
+                isActive = true
+            ),
             navigateToDetail = {},
             toggleActive = { /*TODO*/ },
             toggleDelete = {}
