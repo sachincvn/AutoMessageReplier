@@ -25,6 +25,9 @@ class NotificationService : NotificationListenerService() {
     lateinit var autoMessageReplierUseCase: AutoMessageReplierUseCase
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
+        if ("com.whatsapp" != sbn.packageName) {
+            return
+        }
         CoroutineScope(Dispatchers.IO).launch {
             notificationHandler.processNotification(sbn) {
 

@@ -4,10 +4,12 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.chavan.automessagereplier.data.local.open_ai.OpenAiModelEnum
 import com.chavan.automessagereplier.domain.model.openai.OpenAiConfig
 import com.chavan.automessagereplier.domain.repository.openapi.OpenAiApiRepo
+import com.chavan.automessagereplier.presentation.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,44 +21,46 @@ class OpenAiConfigViewModel @Inject constructor(
     private val _state = mutableStateOf(OpenAiConfigState())
     val state: State<OpenAiConfigState> = _state
 
-    init {
-        getOpenAiConfig()
-    }
+    private val _uiEvent = MutableSharedFlow<UiEvent>()
+    val uiEvent: SharedFlow<UiEvent> = _uiEvent
 
-    fun onEvent(openAiConfigEvents: OpenAiConfigEvents){
-        when(openAiConfigEvents){
+    fun onEvent(openAiConfigEvents: OpenAiConfigEvents) {
+        when (openAiConfigEvents) {
             OpenAiConfigEvents.UpsertOpenAiConfig -> {
                 upsertOpenAiConfig()
             }
         }
     }
 
-    private fun getOpenAiConfig(){
+    private fun upsertOpenAiConfig() {
         viewModelScope.launch {
-            try {
-                val result = openAiApiRepo.getOpenAiLocalConfig()
-                if (result!=null){
-                    _state.value.openAiApiKey.value = result.openAiApiKey ?: ""
-                    _state.value.openAiModel.value = result.openAiModel ?: OpenAiModelEnum.GPT_3_5_TURBO
-                    _state.value.temperature.value = result.temperature ?: 0.7
-                    _state.value.errorMessage.value = result.errorMessage ?: ""
+            if (isValidForm()) {
+                try {
+                    val openAiConfig = OpenAiConfig(
+                        openAiApiKey = _state.value.openAiApiKey.value,
+                        temperature = _state.value.temperature.value,
+                        openAiModel = _state.value.openAiModel.value,
+                        errorMessage = _state.value.errorMessage.value
+                    )
+                    openAiApiRepo.upsertOpenAiConfig(openAiConfig)
+                    _state.value.isConfigSuccessFully.value = true
+                } catch (ex: Exception) {
+                    _state.value.isConfigSuccessFully.value = false
+                    ex.printStackTrace()
                 }
-            }
-            catch (ex : Exception){
-                ex.printStackTrace()
             }
         }
     }
 
-    private fun upsertOpenAiConfig(){
-        viewModelScope.launch {
-            val openAiConfig = OpenAiConfig(
-                openAiApiKey = _state.value.openAiApiKey.value,
-                temperature = _state.value.temperature.value,
-                openAiModel = _state.value.openAiModel.value,
-                errorMessage = _state.value.errorMessage.value
-            )
-            openAiApiRepo.upsertOpenAiConfig(openAiConfig)
+    private suspend fun isValidForm(): Boolean {
+        if (state.value.openAiApiKey.value.isBlank()) {
+            _uiEvent.emit(UiEvent.ShowSnackbar("Api Key cannot be empty"))
+            return false
         }
+        if (state.value.temperature.value.isNaN()) {
+            _uiEvent.emit(UiEvent.ShowSnackbar("Temperature cannot be empty"))
+            return false
+        }
+        return true
     }
 }

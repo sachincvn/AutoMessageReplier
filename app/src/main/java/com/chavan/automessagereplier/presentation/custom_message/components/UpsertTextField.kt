@@ -25,7 +25,8 @@ fun UpsertTextField(
     label: String = "Name",
     placeholder: String = "Enter $label",
     isEnabled : Boolean = true,
-    keyboardType: KeyboardType = KeyboardType.Text
+    keyboardType: KeyboardType = KeyboardType.Text,
+    trailingIcon: @Composable (() -> Unit)? = null,
 ) {
     Text(
         text = label,
@@ -54,6 +55,7 @@ fun UpsertTextField(
                 style = MaterialTheme.typography.bodySmall
             )
         },
+        trailingIcon = trailingIcon,
         enabled = isEnabled
     )
 }

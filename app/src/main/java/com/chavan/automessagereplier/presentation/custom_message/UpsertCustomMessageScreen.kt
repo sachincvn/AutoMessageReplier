@@ -17,6 +17,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Contacts
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -69,9 +70,13 @@ fun UpsertCustomMessageScreen(
     var showOpenAiConfigBottomSheet by remember { mutableStateOf(false) }
 
     if (showOpenAiConfigBottomSheet) {
-        OpenAiConfigBottomSheet(onDismiss = {
-            showOpenAiConfigBottomSheet = false
-        })
+        OpenAiConfigBottomSheet(
+            onDismiss = {
+                showOpenAiConfigBottomSheet = false
+                state.replyWithChatGPT.value = it
+            },
+            openAiConfig = state.openAiConfig.value,
+            snackBarHostState = snackBarHostState)
     }
 
     Scaffold(
@@ -193,9 +198,13 @@ fun UpsertCustomMessageScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable {
-                                        state.replyMessage.value = ""
-                                        state.replyWithChatGPT.value = !state.replyWithChatGPT.value
-                                        showOpenAiConfigBottomSheet = !state.isApiKeyAdded.value
+                                        if (state.isApiKeyAdded.value){
+                                            state.replyMessage.value = ""
+                                            state.replyWithChatGPT.value = !state.replyWithChatGPT.value
+                                        }
+                                        else{
+                                            showOpenAiConfigBottomSheet = true
+                                        }
                                     },
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
@@ -203,13 +212,20 @@ fun UpsertCustomMessageScreen(
                                 Checkbox(
                                     checked = state.replyWithChatGPT.value,
                                     onCheckedChange = {
-                                        state.replyWithChatGPT.value = it
+                                        if (state.isApiKeyAdded.value){
+                                            state.replyWithChatGPT.value = !state.replyWithChatGPT.value
+                                        }
+                                        else{
+                                            showOpenAiConfigBottomSheet = true
+                                        }
                                     }
                                 )
                                 Text(
                                     text = "Reply with chat gpt",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    modifier = Modifier.padding(start = 8.dp).weight(1f)
+                                    modifier = Modifier
+                                        .padding(start = 8.dp)
+                                        .weight(1f)
                                 )
                                 IconButton(
                                     onClick = {
@@ -257,18 +273,24 @@ fun UpsertCustomMessageScreen(
                                 }
 
                                 UpsertTextField(
-                                    value = "",
+                                    value = state.selectedContactName.value,
                                     onTextChanged = {
-                                        state.replyMessage.value = ""
+                                        state.selectedContactName.value = it
                                     },
                                     label = "Select contacts",
                                     placeholder = "Add contact names",
+                                    trailingIcon = {
+                                        IconButton(onClick = { /*TODO*/ }) {
+                                            Icon(imageVector = Icons.Default.Contacts, contentDescription = "Contacts")
+                                        }
+                                    }
                                 )
 
                                 MultipleContactPicker(
                                     onContactsPicked = { contacts ->
                                         selectedContacts = contacts
                                         state.selectedContacts.value = selectedContacts
+                                        state.selectedContactName.value = selectedContacts.first()
                                     }
                                 )
                             }

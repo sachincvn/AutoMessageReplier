@@ -9,5 +9,6 @@ data class OpenAiConfigState(
     val openAiApiKey: MutableState<String> = mutableStateOf(""),
     val openAiModel: MutableState<OpenAiModelEnum> = mutableStateOf(OpenAiModelEnum.GPT_3_5_TURBO),
     val temperature : MutableState<Double> = mutableDoubleStateOf(0.7),
-    val errorMessage : MutableState<String> = mutableStateOf("")
+    val errorMessage : MutableState<String> = mutableStateOf(""),
+    val isConfigSuccessFully : MutableState<Boolean> = mutableStateOf(false)
 )

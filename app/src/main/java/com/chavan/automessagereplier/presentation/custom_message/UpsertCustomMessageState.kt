@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import com.chavan.automessagereplier.data.local.custom_message.ReceivedPattern
 import com.chavan.automessagereplier.data.local.custom_message.ReplyToOption
 import com.chavan.automessagereplier.domain.model.CustomMessage
+import com.chavan.automessagereplier.domain.model.openai.OpenAiConfig
 
 data class UpsertCustomMessageState(
     val receivedMessage: MutableState<String> = mutableStateOf("*"),
@@ -13,8 +14,10 @@ data class UpsertCustomMessageState(
     val receivedPattern: MutableState<ReceivedPattern> = mutableStateOf(ReceivedPattern.AnyMessage),
     val replyToOption: MutableState<ReplyToOption> = mutableStateOf(ReplyToOption.All),
     val selectedContacts: MutableState<List<String>> = mutableStateOf(emptyList()),
+    val selectedContactName: MutableState<String> = mutableStateOf(""),
     val replyWithChatGPT: MutableState<Boolean> = mutableStateOf(false),
     val isApiKeyAdded: MutableState<Boolean> = mutableStateOf(false),
+    val openAiConfig: MutableState<OpenAiConfig?> = mutableStateOf(null),
     val isLoading: Boolean = false,
     val isCustomMessageAdded: Boolean = false,
     val customMessage: CustomMessage? = null,

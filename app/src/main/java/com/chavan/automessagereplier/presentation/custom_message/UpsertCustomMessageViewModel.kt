@@ -12,6 +12,7 @@ import com.chavan.automessagereplier.domain.repository.openapi.OpenAiApiRepo
 import com.chavan.automessagereplier.domain.usecase.UpsertCustomMessageUseCase
 import com.chavan.automessagereplier.presentation.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -24,11 +25,6 @@ class UpsertCustomMessageViewModel @Inject constructor(
     private val openAiApiRepo: OpenAiApiRepo
 ) : ViewModel() {
 
-
-    init {
-        getOpenAiConfig()
-    }
-
     private val _state = mutableStateOf(UpsertCustomMessageState())
     val state: State<UpsertCustomMessageState> = _state
 
@@ -39,6 +35,10 @@ class UpsertCustomMessageViewModel @Inject constructor(
     val replyToOption = ReplyToOption.values().toList()
 
     private var textEnteredCount : Int = 0
+
+    init {
+        getOpenAiConfig()
+    }
     fun onEvent(event: UpsertCustomMessageEvents) {
         when (event) {
             is UpsertCustomMessageEvents.UpsertCustomMessage -> {
@@ -126,6 +126,7 @@ class UpsertCustomMessageViewModel @Inject constructor(
                 val response = openAiApiRepo.getOpenAiLocalConfig()
                 if (response!=null){
                     state.value.isApiKeyAdded.value = response.openAiApiKey!!.isNotBlank()
+                    state.value.openAiConfig.value = response
                 }
             }
             catch (ex : Exception){
