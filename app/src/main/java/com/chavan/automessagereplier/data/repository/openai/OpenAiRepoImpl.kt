@@ -14,8 +14,8 @@ class OpenAiRepoImpl @Inject constructor(
     private val openAiConfigDao: OpenAiConfigDao
 ) : OpenAiApiRepo {
 
-    override suspend fun getOpenAiResponse(chatRequestDTO: ChatRequestDTO): OpenAiGptDTO {
-        return api.getOpenAiResponse(chatRequestDTO)
+    override suspend fun getOpenAiResponse(apiKey : String,chatRequestDTO: ChatRequestDTO): OpenAiGptDTO {
+        return api.getOpenAiResponse(apiKey,chatRequestDTO)
     }
 
     override suspend fun getOpenAiLocalConfig(): OpenAiConfig {

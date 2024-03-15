@@ -19,24 +19,28 @@ class NotificationService : NotificationListenerService() {
 
     private var lastNotificationTitle: CharSequence? = null
     private var lastNotificationTime: Long = 0
+    private val notificationHandler = NotificationHandler()
 
     @Inject
     lateinit var autoMessageReplierUseCase: AutoMessageReplierUseCase
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         CoroutineScope(Dispatchers.IO).launch {
-            if (!autoMessageReplierUseCase.isServiceEnabled()) {
-                return@launch
-            }
-            val currentTime = System.currentTimeMillis()
-            val currentTitle = sbn.notification.extras.getCharSequence(Notification.EXTRA_TITLE)
+            notificationHandler.processNotification(sbn) {
 
-            if (currentTitle != null && currentTitle == lastNotificationTitle &&
-                (currentTime - lastNotificationTime) < 3000
-            ) {
-                return@launch
-            } else {
-                handleNotification(sbn)
+                if (!autoMessageReplierUseCase.isServiceEnabled()) {
+                    return@processNotification
+                }
+                val currentTime = System.currentTimeMillis()
+                val currentTitle = sbn.notification.extras.getCharSequence(Notification.EXTRA_TITLE)
+
+                if (currentTitle != null && currentTitle == lastNotificationTitle &&
+                    (currentTime - lastNotificationTime) < 3000
+                ) {
+                    return@processNotification
+                } else {
+                    handleNotification(sbn)
+                }
             }
         }
     }

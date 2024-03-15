@@ -14,6 +14,7 @@ data class UpsertCustomMessageState(
     val replyToOption: MutableState<ReplyToOption> = mutableStateOf(ReplyToOption.All),
     val selectedContacts: MutableState<List<String>> = mutableStateOf(emptyList()),
     val replyWithChatGPT: MutableState<Boolean> = mutableStateOf(false),
+    val isApiKeyAdded: MutableState<Boolean> = mutableStateOf(false),
     val isLoading: Boolean = false,
     val isCustomMessageAdded: Boolean = false,
     val customMessage: CustomMessage? = null,

@@ -8,6 +8,7 @@ import com.chavan.automessagereplier.core.utils.Resource
 import com.chavan.automessagereplier.data.local.custom_message.ReceivedPattern
 import com.chavan.automessagereplier.data.local.custom_message.ReplyToOption
 import com.chavan.automessagereplier.domain.model.CustomMessage
+import com.chavan.automessagereplier.domain.repository.openapi.OpenAiApiRepo
 import com.chavan.automessagereplier.domain.usecase.UpsertCustomMessageUseCase
 import com.chavan.automessagereplier.presentation.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,9 +20,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UpsertCustomMessageViewModel @Inject constructor(
-    private val upsCustomMessageUseCase: UpsertCustomMessageUseCase
+    private val upsCustomMessageUseCase: UpsertCustomMessageUseCase,
+    private val openAiApiRepo: OpenAiApiRepo
 ) : ViewModel() {
 
+
+    init {
+        getOpenAiConfig()
+    }
 
     private val _state = mutableStateOf(UpsertCustomMessageState())
     val state: State<UpsertCustomMessageState> = _state
@@ -112,5 +118,19 @@ class UpsertCustomMessageViewModel @Inject constructor(
             return false
         }
         return true
+    }
+
+    private fun getOpenAiConfig(){
+        viewModelScope.launch {
+            try {
+                val response = openAiApiRepo.getOpenAiLocalConfig()
+                if (response!=null){
+                    state.value.isApiKeyAdded.value = response.openAiApiKey!!.isNotBlank()
+                }
+            }
+            catch (ex : Exception){
+                ex.printStackTrace()
+            }
+        }
     }
 }

@@ -28,7 +28,9 @@ class ConfigCustomMessageUseCase @Inject constructor(
             emit(Resource.Loading())
             try {
                 val result = customMessageRepo.getCustomMessageConfig()
-                emit(Resource.Success(result))
+                if (result!=null){
+                    emit(Resource.Success(result))
+                }
             } catch (ex: NullPointerException) {
                 ex.printStackTrace()
             } catch (ex: Exception) {

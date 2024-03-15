@@ -9,6 +9,7 @@ fun OpenAiConfig.toOpenAiConfigDaoEntity() : OpenAiConfigEntity{
         openAiModel = openAiModel,
         temperature = temperature,
         errorMessage = errorMessage,
+        id = id
     )
 }
 
@@ -18,5 +19,6 @@ fun OpenAiConfigEntity.toOpenAiConfigDaoEntity() : OpenAiConfig{
         openAiModel = openAiModel,
         temperature = temperature,
         errorMessage = errorMessage,
+        id = id
     )
 }

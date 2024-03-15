@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import com.chavan.automessagereplier.core.commons.Constants
 import com.chavan.automessagereplier.data.local.CustomMessageDatabase
+import com.chavan.automessagereplier.data.local.open_ai.OpenAiConfigDao
 import com.chavan.automessagereplier.data.remote.services.openapi.IOpenaiGptApi
 import dagger.Module
 import dagger.Provides
@@ -36,5 +37,11 @@ class AppModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create()
+    }
+
+    @Provides
+    @Singleton
+    fun provideOpenAiConfigDao(database: CustomMessageDatabase): OpenAiConfigDao {
+        return database.openAiConfigDao
     }
 }

@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey
 @Entity
 data class OpenAiConfigEntity(
     val openAiApiKey : String? = null,
-    val openAiModel : OpenAiModelEnum = OpenAiModelEnum.GPT_3_5_TURBO,
-    val temperature : Double = 0.7,
+    val openAiModel : OpenAiModelEnum? = OpenAiModelEnum.GPT_3_5_TURBO,
+    val temperature : Double? = 0.7,
     val errorMessage : String? = null,
     @PrimaryKey
     val id : Int  = 0

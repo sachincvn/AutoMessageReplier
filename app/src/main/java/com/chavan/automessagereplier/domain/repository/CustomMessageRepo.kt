@@ -8,5 +8,5 @@ interface CustomMessageRepo {
     suspend fun upsertCustomMessage(customMessage: CustomMessage)
     suspend fun removeCustomMessage(id: Long)
     suspend fun configCustomMessage(customMessageConfig: CustomMessageConfig)
-    suspend fun getCustomMessageConfig(): CustomMessageConfig
+    suspend fun getCustomMessageConfig(): CustomMessageConfig?
 }

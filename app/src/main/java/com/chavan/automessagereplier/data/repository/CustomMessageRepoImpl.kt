@@ -33,7 +33,7 @@ class CustomMessageRepoImpl @Inject constructor(
         return dao.configCustomMessenger(customMessageConfig.toCustomMessageEntity())
     }
 
-    override suspend fun getCustomMessageConfig(): CustomMessageConfig {
-        return dao.getCustomMessengerConfig()!!.toCustomMessage()
+    override suspend fun getCustomMessageConfig(): CustomMessageConfig? {
+        return dao.getCustomMessengerConfig()?.toCustomMessage()
     }
 }

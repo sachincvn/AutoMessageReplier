@@ -19,12 +19,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.chavan.automessagereplier.data.local.open_ai.OpenAiModelEnum
 
 @Composable
 fun OutlinedTextFieldWithDropdown(
-    options: List<String>,
-    selectedOption: String,
-    onOptionSelected: (String) -> Unit,
+    selectedOption: OpenAiModelEnum,
+    onOptionSelected: (OpenAiModelEnum) -> Unit,
     label: String,
     leadingIcon: ImageVector,
     modifier: Modifier = Modifier
@@ -38,7 +38,7 @@ fun OutlinedTextFieldWithDropdown(
         modifier = Modifier.padding(top = 10.dp, bottom = 4.dp)
     )
     OutlinedTextField(
-        value = selectedOption,
+        value = selectedOption.value!!,
         onValueChange = { /* Handle value change if needed */ },
         trailingIcon = {
             Icon(
@@ -60,14 +60,14 @@ fun OutlinedTextFieldWithDropdown(
         modifier = Modifier.fillMaxWidth()
 
     ) {
-        options.forEach { option ->
+        OpenAiModelEnum.values().toList().forEach { option ->
             DropdownMenuItem(
                 onClick = {
                     onOptionSelected(option)
                     expanded = false
                 },
                 text = {
-                Text(text = option, fontSize = 16.sp)
+                Text(text = option.value!!, fontSize = 16.sp)
             })
         }
     }

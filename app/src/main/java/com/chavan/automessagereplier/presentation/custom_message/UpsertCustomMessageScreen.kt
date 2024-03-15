@@ -52,7 +52,7 @@ import com.chavan.automessagereplier.domain.model.CustomMessage
 import com.chavan.automessagereplier.presentation.UiEvent
 import com.chavan.automessagereplier.presentation.custom_message.components.FieldWrapper
 import com.chavan.automessagereplier.presentation.custom_message.components.MultipleContactPicker
-import com.chavan.automessagereplier.presentation.custom_message.components.OpenAiSettingBottomSheet
+import com.chavan.automessagereplier.presentation.custom_message.open_ai.OpenAiConfigBottomSheet
 import com.chavan.automessagereplier.presentation.custom_message.components.UpsertTextField
 import kotlinx.coroutines.flow.collectLatest
 
@@ -66,12 +66,12 @@ fun UpsertCustomMessageScreen(
     val state = upsertCustomMessageViewModel.state.value
     val snackBarHostState = remember { SnackbarHostState() }
 
-    var showSheet by remember { mutableStateOf(false) }
+    var showOpenAiConfigBottomSheet by remember { mutableStateOf(false) }
 
-    if (showSheet) {
-        OpenAiSettingBottomSheet() {
-            showSheet = false
-        }
+    if (showOpenAiConfigBottomSheet) {
+        OpenAiConfigBottomSheet(onDismiss = {
+            showOpenAiConfigBottomSheet = false
+        })
     }
 
     Scaffold(
@@ -195,6 +195,7 @@ fun UpsertCustomMessageScreen(
                                     .clickable {
                                         state.replyMessage.value = ""
                                         state.replyWithChatGPT.value = !state.replyWithChatGPT.value
+                                        showOpenAiConfigBottomSheet = !state.isApiKeyAdded.value
                                     },
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
@@ -212,7 +213,7 @@ fun UpsertCustomMessageScreen(
                                 )
                                 IconButton(
                                     onClick = {
-                                        showSheet = true
+                                        showOpenAiConfigBottomSheet = true
                                     },
                                 ) {
                                     Icon(
