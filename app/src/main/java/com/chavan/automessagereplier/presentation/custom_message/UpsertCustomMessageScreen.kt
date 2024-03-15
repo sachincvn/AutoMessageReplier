@@ -53,8 +53,8 @@ import com.chavan.automessagereplier.domain.model.CustomMessage
 import com.chavan.automessagereplier.presentation.UiEvent
 import com.chavan.automessagereplier.presentation.custom_message.components.FieldWrapper
 import com.chavan.automessagereplier.presentation.custom_message.components.MultipleContactPicker
-import com.chavan.automessagereplier.presentation.custom_message.open_ai.OpenAiConfigBottomSheet
 import com.chavan.automessagereplier.presentation.custom_message.components.UpsertTextField
+import com.chavan.automessagereplier.presentation.custom_message.open_ai.OpenAiConfigBottomSheet
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,7 +76,8 @@ fun UpsertCustomMessageScreen(
                 state.replyWithChatGPT.value = it
             },
             openAiConfig = state.openAiConfig.value,
-            snackBarHostState = snackBarHostState)
+            snackBarHostState = snackBarHostState
+        )
     }
 
     Scaffold(
@@ -198,11 +199,11 @@ fun UpsertCustomMessageScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable {
-                                        if (state.isApiKeyAdded.value){
+                                        if (state.isApiKeyAdded.value) {
                                             state.replyMessage.value = ""
-                                            state.replyWithChatGPT.value = !state.replyWithChatGPT.value
-                                        }
-                                        else{
+                                            state.replyWithChatGPT.value =
+                                                !state.replyWithChatGPT.value
+                                        } else {
                                             showOpenAiConfigBottomSheet = true
                                         }
                                     },
@@ -212,10 +213,10 @@ fun UpsertCustomMessageScreen(
                                 Checkbox(
                                     checked = state.replyWithChatGPT.value,
                                     onCheckedChange = {
-                                        if (state.isApiKeyAdded.value){
-                                            state.replyWithChatGPT.value = !state.replyWithChatGPT.value
-                                        }
-                                        else{
+                                        if (state.isApiKeyAdded.value) {
+                                            state.replyWithChatGPT.value =
+                                                !state.replyWithChatGPT.value
+                                        } else {
                                             showOpenAiConfigBottomSheet = true
                                         }
                                     }
@@ -281,7 +282,10 @@ fun UpsertCustomMessageScreen(
                                     placeholder = "Add contact names",
                                     trailingIcon = {
                                         IconButton(onClick = { /*TODO*/ }) {
-                                            Icon(imageVector = Icons.Default.Contacts, contentDescription = "Contacts")
+                                            Icon(
+                                                imageVector = Icons.Default.Contacts,
+                                                contentDescription = "Contacts"
+                                            )
                                         }
                                     }
                                 )

@@ -45,10 +45,10 @@ fun OpenAiConfigBottomSheet(
 
     val modalBottomSheetState = rememberModalBottomSheetState()
 
-    if (openAiConfig!=null){
+    if (openAiConfig != null) {
         state.openAiApiKey.value = openAiConfig.openAiApiKey ?: ""
         state.openAiModel.value = openAiConfig.openAiModel ?: OpenAiModelEnum.GPT_3_5_TURBO
-        state.temperature.value = openAiConfig.temperature ?: 0.7
+        state.temperature.value = openAiConfig.temperature.toString() ?: "0.7"
         state.errorMessage.value = openAiConfig.errorMessage ?: ""
     }
 
@@ -56,11 +56,10 @@ fun OpenAiConfigBottomSheet(
         onDismissRequest = {
             if (state.isConfigSuccessFully.value) {
                 onDismiss(state.isConfigSuccessFully.value)
+            } else {
+                onDismiss(state.isConfigSuccessFully.value)
             }
-            else{
-                onDismiss(false)
-            }
-                           },
+        },
         sheetState = modalBottomSheetState,
         dragHandle = { BottomSheetDefaults.DragHandle() },
         modifier = Modifier
@@ -76,11 +75,14 @@ fun OpenAiConfigBottomSheet(
                 .fillMaxSize()
                 .padding(horizontal = 14.dp, vertical = 10.dp)
         ) {
-            UpsertTextField(value = state.openAiApiKey.value,
+            UpsertTextField(
+                value = state.openAiApiKey.value,
                 onTextChanged = {
-                                state.openAiApiKey.value = it
+                    state.openAiApiKey.value = it
                 },
-                label = "Api key")
+                isError = state.isOpenAiApiKeyEmpty.value,
+                label = "Api key"
+            )
             OutlinedTextFieldWithDropdown(
                 selectedOption = OpenAiModelEnum.GPT_3_5_TURBO,
                 onOptionSelected = {
@@ -89,22 +91,27 @@ fun OpenAiConfigBottomSheet(
                 label = "Model",
                 leadingIcon = Icons.Default.ArrowDropDown
             )
-            UpsertTextField(value = state.temperature.value.toString(),
+            UpsertTextField(
+                value = state.temperature.value.toString(),
                 onTextChanged = {
-                    state.temperature.value = it.toDouble()
-                                },
-                label = "Temperature",
-                keyboardType = KeyboardType.Number)
-            UpsertTextField(value = state.errorMessage.value,
-                onTextChanged = {
-                                state.errorMessage.value = it
+                    state.temperature.value = it
                 },
-                label = "Error reply")
+                isError = state.isOpenTemperatureEmpty.value,
+                label = "Temperature",
+                keyboardType = KeyboardType.Number
+            )
+            UpsertTextField(
+                value = state.errorMessage.value,
+                onTextChanged = {
+                    state.errorMessage.value = it
+                },
+                label = "Error reply"
+            )
             Spacer(modifier = Modifier.height(10.dp))
             Button(
                 onClick = {
                     openAiConfigViewModel.onEvent(OpenAiConfigEvents.UpsertOpenAiConfig)
-                          },
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Save")

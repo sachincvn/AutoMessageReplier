@@ -38,7 +38,7 @@ class OpenAiConfigViewModel @Inject constructor(
                 try {
                     val openAiConfig = OpenAiConfig(
                         openAiApiKey = _state.value.openAiApiKey.value,
-                        temperature = _state.value.temperature.value,
+                        temperature = _state.value.temperature.value.toDouble(),
                         openAiModel = _state.value.openAiModel.value,
                         errorMessage = _state.value.errorMessage.value
                     )
@@ -53,11 +53,13 @@ class OpenAiConfigViewModel @Inject constructor(
     }
 
     private suspend fun isValidForm(): Boolean {
+        state.value.isOpenAiApiKeyEmpty.value = state.value.openAiApiKey.value.isBlank()
+        state.value.isOpenTemperatureEmpty.value = state.value.temperature.value.isBlank()
         if (state.value.openAiApiKey.value.isBlank()) {
             _uiEvent.emit(UiEvent.ShowSnackbar("Api Key cannot be empty"))
             return false
         }
-        if (state.value.temperature.value.isNaN()) {
+        if (state.value.temperature.value.isBlank()) {
             _uiEvent.emit(UiEvent.ShowSnackbar("Temperature cannot be empty"))
             return false
         }

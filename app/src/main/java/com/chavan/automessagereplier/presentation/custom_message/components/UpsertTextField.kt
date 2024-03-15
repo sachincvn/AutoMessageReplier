@@ -25,7 +25,9 @@ fun UpsertTextField(
     label: String = "Name",
     placeholder: String = "Enter $label",
     isEnabled : Boolean = true,
+    errorMessage: String? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
+    isError : Boolean = false,
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
     Text(
@@ -38,6 +40,7 @@ fun UpsertTextField(
         value = value,
         onValueChange = { onTextChanged(it) },
         singleLine = true,
+        isError = isError,
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType),
         visualTransformation = VisualTransformation.None,
         modifier = Modifier

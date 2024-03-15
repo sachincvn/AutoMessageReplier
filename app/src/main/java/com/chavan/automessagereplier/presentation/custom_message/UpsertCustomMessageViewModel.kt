@@ -12,7 +12,6 @@ import com.chavan.automessagereplier.domain.repository.openapi.OpenAiApiRepo
 import com.chavan.automessagereplier.domain.usecase.UpsertCustomMessageUseCase
 import com.chavan.automessagereplier.presentation.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -34,16 +33,17 @@ class UpsertCustomMessageViewModel @Inject constructor(
     val receivedPattern = ReceivedPattern.values().toList()
     val replyToOption = ReplyToOption.values().toList()
 
-    private var textEnteredCount : Int = 0
+    private var textEnteredCount: Int = 0
 
     init {
         getOpenAiConfig()
     }
+
     fun onEvent(event: UpsertCustomMessageEvents) {
         when (event) {
             is UpsertCustomMessageEvents.UpsertCustomMessage -> {
                 viewModelScope.launch {
-                   upsertCustomMessage(event)
+                    upsertCustomMessage(event)
                 }
             }
 
@@ -52,11 +52,10 @@ class UpsertCustomMessageViewModel @Inject constructor(
             }
 
             is UpsertCustomMessageEvents.OnReceivedPatterChange -> {
-                _state.value.receivedPattern.value =  event.option
-                if(_state.value.receivedPattern.value == ReceivedPattern.AnyMessage) {
+                _state.value.receivedPattern.value = event.option
+                if (_state.value.receivedPattern.value == ReceivedPattern.AnyMessage) {
                     _state.value.receivedMessage.value = "*"
-                }
-                else{
+                } else {
                     _state.value.receivedMessage.value = ""
                 }
             }
@@ -65,12 +64,13 @@ class UpsertCustomMessageViewModel @Inject constructor(
 
     private fun updateReceivedPatternOption(event: UpsertCustomMessageEvents.OnReceivedMessageChange) {
         textEnteredCount++
-        if (event.message == "*" || _state.value.receivedMessage.value == "*"){
-            _state.value = _state.value.copy(receivedPattern = mutableStateOf(ReceivedPattern.AnyMessage))
+        if (event.message == "*" || _state.value.receivedMessage.value == "*") {
+            _state.value =
+                _state.value.copy(receivedPattern = mutableStateOf(ReceivedPattern.AnyMessage))
             textEnteredCount = 0
-        }
-        else if (textEnteredCount==1){
-            _state.value = _state.value.copy(receivedPattern = mutableStateOf(ReceivedPattern.ExactMatch))
+        } else if (textEnteredCount == 1) {
+            _state.value =
+                _state.value.copy(receivedPattern = mutableStateOf(ReceivedPattern.ExactMatch))
         }
     }
 
@@ -111,7 +111,7 @@ class UpsertCustomMessageViewModel @Inject constructor(
             return false
         }
         if (customMessage.replyMessage.isBlank()) {
-            if (state.value.replyWithChatGPT.value){
+            if (state.value.replyWithChatGPT.value) {
                 return true
             }
             _uiEvent.emit(UiEvent.ShowSnackbar("Received message is empty"))
@@ -120,16 +120,15 @@ class UpsertCustomMessageViewModel @Inject constructor(
         return true
     }
 
-    private fun getOpenAiConfig(){
+    private fun getOpenAiConfig() {
         viewModelScope.launch {
             try {
                 val response = openAiApiRepo.getOpenAiLocalConfig()
-                if (response!=null){
+                if (response != null) {
                     state.value.isApiKeyAdded.value = response.openAiApiKey!!.isNotBlank()
                     state.value.openAiConfig.value = response
                 }
-            }
-            catch (ex : Exception){
+            } catch (ex: Exception) {
                 ex.printStackTrace()
             }
         }
