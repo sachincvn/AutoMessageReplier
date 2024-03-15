@@ -22,7 +22,11 @@ class AutoMessageReplierUseCase @Inject constructor(
     private val openAiApiRepo: OpenAiApiRepo
 ) {
     suspend fun isServiceEnabled(): Boolean {
-        return customMessageRepo.getCustomMessageConfig()?.isActive ?: false
+        return try {
+            customMessageRepo.getCustomMessageConfig()?.isActive ?: false
+        }catch (ex : Exception){
+            false
+        }
     }
 
     suspend fun getReplyMessage(statusBarNotification: StatusBarNotification): String? {
@@ -69,9 +73,11 @@ class AutoMessageReplierUseCase @Inject constructor(
     }
 
     private suspend fun getOpenApiReply(message: String): String? {
+        var errorMessage : String? = null
         try {
             val result = openAiApiRepo.getOpenAiLocalConfig()
             if (result!=null){
+                errorMessage = result.errorMessage
                 val chatRequestDTO = ChatRequestDTO(
                     messages = listOf(MessageX(role = "user", content = message)),
                     model = result.openAiModel?.value ?: "gpt-3.5-turbo",
@@ -86,7 +92,7 @@ class AutoMessageReplierUseCase @Inject constructor(
         }
         catch (ex : Exception){
             ex.printStackTrace()
-            return "The gpt cant generate your answer ${ex.message}"
+            return errorMessage
         }
     }
 }
