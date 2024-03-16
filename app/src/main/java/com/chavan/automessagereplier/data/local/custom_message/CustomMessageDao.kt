@@ -14,7 +14,7 @@ interface CustomMessageDao {
     @Query("DELETE FROM custommessageentity WHERE id=:id")
     suspend fun removeCustomMessage(id: Long)
 
-    @Query("SELECT * FROM custommessageentity")
+    @Query("SELECT * FROM custommessageentity ORDER BY lastUpdated DESC")
     suspend fun getCustomMessages(): List<CustomMessageEntity>
     @Upsert
     suspend fun configCustomMessenger(customMessageConfigEntity: CustomMessageConfigEntity)

@@ -1,6 +1,6 @@
 package com.chavan.automessagereplier.domain.repository
 
-import com.chavan.automessagereplier.domain.model.CustomMessage
+import com.chavan.automessagereplier.domain.model.custom_message.CustomMessage
 import com.chavan.automessagereplier.domain.model.custom_message.CustomMessageConfig
 
 interface CustomMessageRepo {

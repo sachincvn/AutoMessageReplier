@@ -1,7 +1,7 @@
 package com.chavan.automessagereplier.domain.usecase
 
 import com.chavan.automessagereplier.core.utils.Resource
-import com.chavan.automessagereplier.domain.model.CustomMessage
+import com.chavan.automessagereplier.domain.model.custom_message.CustomMessage
 import com.chavan.automessagereplier.domain.repository.CustomMessageRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -14,7 +14,7 @@ class GetAllCustomMessagesUseCase @Inject constructor(
         return flow {
             emit(Resource.Loading())
             try {
-                val result = customMessageRepo.getCustomMessages().asReversed()
+                val result = customMessageRepo.getCustomMessages()
                 emit(Resource.Success(result))
             } catch (ex: Exception) {
                 ex.printStackTrace()

@@ -7,7 +7,7 @@ import com.chavan.automessagereplier.data.local.custom_message.ReceivedPattern
 import com.chavan.automessagereplier.data.local.custom_message.ReplyToOption
 import com.chavan.automessagereplier.data.remote.dto.openai.ChatRequestDTO
 import com.chavan.automessagereplier.data.remote.dto.openai.MessageX
-import com.chavan.automessagereplier.domain.model.CustomMessage
+import com.chavan.automessagereplier.domain.model.custom_message.CustomMessage
 import com.chavan.automessagereplier.domain.repository.CustomMessageRepo
 import com.chavan.automessagereplier.domain.repository.openapi.OpenAiApiRepo
 import com.chavan.automessagereplier.notification_service.NotificationUtils

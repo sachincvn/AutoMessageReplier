@@ -28,7 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.chavan.automessagereplier.data.local.custom_message.ReplyToOption
-import com.chavan.automessagereplier.domain.model.CustomMessage
+import com.chavan.automessagereplier.domain.model.custom_message.CustomMessage
 
 @Composable
 fun CustomMessageItem(
@@ -129,26 +129,5 @@ fun CustomMessageItem(
             )
 
         }
-    }
-}
-
-@Preview(showSystemUi = true)
-@Composable
-fun CustomMessageItemPreview() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = 10.dp)
-    ) {
-        CustomMessageItem(
-            customMessage = CustomMessage(
-                receivedMessage = "Hello",
-                replyMessage = "Welcome",
-                isActive = true
-            ),
-            navigateToDetail = {},
-            toggleActive = { /*TODO*/ },
-            toggleDelete = {}
-        )
     }
 }

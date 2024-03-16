@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import com.chavan.automessagereplier.data.local.custom_message.ReceivedPattern
 import com.chavan.automessagereplier.data.local.custom_message.ReplyToOption
-import com.chavan.automessagereplier.domain.model.CustomMessage
+import com.chavan.automessagereplier.domain.model.custom_message.CustomMessage
 import com.chavan.automessagereplier.domain.model.openai.OpenAiConfig
 
 data class UpsertCustomMessageState(

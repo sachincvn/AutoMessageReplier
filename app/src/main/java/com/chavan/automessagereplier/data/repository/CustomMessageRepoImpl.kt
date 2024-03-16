@@ -3,7 +3,7 @@ package com.chavan.automessagereplier.data.repository
 import com.chavan.automessagereplier.data.local.CustomMessageDatabase
 import com.chavan.automessagereplier.data.mapper.toCustomMessage
 import com.chavan.automessagereplier.data.mapper.toCustomMessageEntity
-import com.chavan.automessagereplier.domain.model.CustomMessage
+import com.chavan.automessagereplier.domain.model.custom_message.CustomMessage
 import com.chavan.automessagereplier.domain.model.custom_message.CustomMessageConfig
 import com.chavan.automessagereplier.domain.repository.CustomMessageRepo
 import javax.inject.Inject

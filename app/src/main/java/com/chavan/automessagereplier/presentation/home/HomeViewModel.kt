@@ -5,11 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chavan.automessagereplier.core.utils.Resource
-import com.chavan.automessagereplier.data.remote.dto.openai.ChatRequestDTO
-import com.chavan.automessagereplier.data.remote.dto.openai.MessageX
-import com.chavan.automessagereplier.domain.model.CustomMessage
+import com.chavan.automessagereplier.domain.model.custom_message.CustomMessage
 import com.chavan.automessagereplier.domain.model.custom_message.CustomMessageConfig
-import com.chavan.automessagereplier.domain.usecase.AutoMessageReplierUseCase
 import com.chavan.automessagereplier.domain.usecase.ConfigCustomMessageUseCase
 import com.chavan.automessagereplier.domain.usecase.DeleteCustomMessageUseCase
 import com.chavan.automessagereplier.domain.usecase.GetAllCustomMessagesUseCase

@@ -12,6 +12,7 @@ data class CustomMessageEntity(
     val replyToOption: ReplyToOption = ReplyToOption.SavedContact,
     val selectedContacts: List<String> = emptyList(),
     val replyWithChatGptApi : Boolean = false,
+    val lastUpdated: Long = System.currentTimeMillis(),
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0
 )

@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.chavan.automessagereplier.core.utils.Resource
 import com.chavan.automessagereplier.data.local.custom_message.ReceivedPattern
 import com.chavan.automessagereplier.data.local.custom_message.ReplyToOption
-import com.chavan.automessagereplier.domain.model.CustomMessage
+import com.chavan.automessagereplier.domain.model.custom_message.CustomMessage
 import com.chavan.automessagereplier.domain.repository.openapi.OpenAiApiRepo
 import com.chavan.automessagereplier.domain.usecase.GetCustomMessageUseCase
 import com.chavan.automessagereplier.domain.usecase.UpsertCustomMessageUseCase
@@ -57,7 +57,7 @@ class UpsertCustomMessageViewModel @Inject constructor(
                 _state.value.receivedPattern.value = event.option
                 if (_state.value.receivedPattern.value == ReceivedPattern.AnyMessage) {
                     _state.value.receivedMessage.value = "*"
-                } else {
+                } else if (_state.value.receivedMessage.value == "*")  {
                     _state.value.receivedMessage.value = ""
                 }
             }
@@ -72,7 +72,7 @@ class UpsertCustomMessageViewModel @Inject constructor(
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
             getCustomMessageUseCase.invoke(id).collectLatest {
-                when(it){
+                when (it) {
                     is Resource.Error -> {
                         _uiEvent.emit(
                             UiEvent.ShowSnackbar(
@@ -125,7 +125,7 @@ class UpsertCustomMessageViewModel @Inject constructor(
             return
         }
         var customMessage = event.customMessage
-        if (_state.value.isEditing.value){
+        if (_state.value.isEditing.value) {
             customMessage = event.customMessage.copy(id = _state.value.id.value)
         }
         _state.value = _state.value.copy(isLoading = true)

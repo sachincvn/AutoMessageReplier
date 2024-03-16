@@ -1,6 +1,6 @@
 package com.chavan.automessagereplier.presentation.home
 
-import com.chavan.automessagereplier.domain.model.CustomMessage
+import com.chavan.automessagereplier.domain.model.custom_message.CustomMessage
 
 sealed class HomeScreenEvents {
     data class DeleteCustomMessage(val id: Long) : HomeScreenEvents()

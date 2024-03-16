@@ -48,7 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.chavan.automessagereplier.data.local.custom_message.ReplyToOption
-import com.chavan.automessagereplier.domain.model.CustomMessage
+import com.chavan.automessagereplier.domain.model.custom_message.CustomMessage
 import com.chavan.automessagereplier.presentation.UiEvent
 import com.chavan.automessagereplier.presentation.custom_message.components.FieldWrapper
 import com.chavan.automessagereplier.presentation.custom_message.components.MultipleContactPicker
@@ -81,9 +81,9 @@ fun UpsertCustomMessageScreen(
     }
 
     LaunchedEffect(key1 = customMessageId) {
-        if (customMessageId != null) {
+        if (customMessageId != (-1).toLong()) {
             state.isEditing.value = true
-            state.id.value = customMessageId
+            state.id.value = customMessageId!!
             upsertCustomMessageViewModel.onEvent(UpsertCustomMessageEvents.GetCustomMessage(customMessageId))
         }
     }
