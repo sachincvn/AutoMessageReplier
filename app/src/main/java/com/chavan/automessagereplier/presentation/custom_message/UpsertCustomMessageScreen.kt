@@ -62,6 +62,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun UpsertCustomMessageScreen(
     navigator: NavController,
+    customMessageId: Long? = null,
     upsertCustomMessageViewModel: UpsertCustomMessageViewModel = hiltViewModel()
 ) {
     val state = upsertCustomMessageViewModel.state.value
@@ -79,6 +80,15 @@ fun UpsertCustomMessageScreen(
             snackBarHostState = snackBarHostState
         )
     }
+
+    LaunchedEffect(key1 = customMessageId) {
+        if (customMessageId != null) {
+            state.isEditing.value = true
+            state.id.value = customMessageId
+            upsertCustomMessageViewModel.onEvent(UpsertCustomMessageEvents.GetCustomMessage(customMessageId))
+        }
+    }
+
 
     Scaffold(
         snackbarHost = {
@@ -317,13 +327,13 @@ fun UpsertCustomMessageScreen(
 @Composable
 private fun TopAppBar(
     navigator: NavController,
-    viewModel: UpsertCustomMessageViewModel
+    viewModel: UpsertCustomMessageViewModel,
 ) {
     val state = viewModel.state.value
     CenterAlignedTopAppBar(
         title = {
             Text(
-                "Add custom reply",
+                if(state.isEditing.value) "Add custom reply" else "Edit custom reply",
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium)

@@ -61,7 +61,7 @@ fun HomeScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navigator.navigate("AddCustomMessage") }
+                onClick = { navigator.navigate("UpsertCustomMessage") }
             ) {
                 Icon(
                     Icons.Default.ChatBubbleOutline,
@@ -164,7 +164,9 @@ fun HomeScreen(
                         items(items = state.customMessages, key = { it.id }) { customMessage ->
                             CustomMessageItem(
                                 customMessage = customMessage,
-                                navigateToDetail = {},
+                                navigateToDetail = {
+                                    navigator.navigate("UpsertCustomMessage?customMessageId=${customMessage.id}")
+                                },
                                 toggleActive = {
                                     homeViewModel.onEvent(
                                         HomeScreenEvents.ToggleActive(

@@ -7,9 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.chavan.automessagereplier.notification_service.NotificationUtils
 import com.chavan.automessagereplier.presentation.custom_message.UpsertCustomMessageScreen
 import com.chavan.automessagereplier.presentation.home.HomeScreen
@@ -32,8 +34,21 @@ class MainActivity : ComponentActivity() {
                         composable("HomeScreen") {
                             HomeScreen(navigator = navController)
                         }
-                        composable("AddCustomMessage") {
-                            UpsertCustomMessageScreen(navigator = navController)
+                        composable(route="UpsertCustomMessage?customMessageId={customMessageId}",
+                            arguments = listOf(
+                                navArgument(
+                                    name = "customMessageId"
+                                ) {
+                                    type = NavType.LongType
+                                    defaultValue = -1
+                                },
+                            )
+                        ) {
+                            val customMessageId = it.arguments?.getLong("customMessageId") ?: -1
+                            UpsertCustomMessageScreen(
+                                navigator = navController,
+                                customMessageId = customMessageId
+                            )
                         }
                     }
                 }

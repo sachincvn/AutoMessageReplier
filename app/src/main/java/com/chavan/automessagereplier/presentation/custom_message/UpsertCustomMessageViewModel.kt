@@ -9,6 +9,7 @@ import com.chavan.automessagereplier.data.local.custom_message.ReceivedPattern
 import com.chavan.automessagereplier.data.local.custom_message.ReplyToOption
 import com.chavan.automessagereplier.domain.model.CustomMessage
 import com.chavan.automessagereplier.domain.repository.openapi.OpenAiApiRepo
+import com.chavan.automessagereplier.domain.usecase.GetCustomMessageUseCase
 import com.chavan.automessagereplier.domain.usecase.UpsertCustomMessageUseCase
 import com.chavan.automessagereplier.presentation.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class UpsertCustomMessageViewModel @Inject constructor(
     private val upsCustomMessageUseCase: UpsertCustomMessageUseCase,
+    private val getCustomMessageUseCase: GetCustomMessageUseCase,
     private val openAiApiRepo: OpenAiApiRepo
 ) : ViewModel() {
 
@@ -59,6 +61,50 @@ class UpsertCustomMessageViewModel @Inject constructor(
                     _state.value.receivedMessage.value = ""
                 }
             }
+
+            is UpsertCustomMessageEvents.GetCustomMessage -> {
+                getCustomMessage(event.id)
+            }
+        }
+    }
+
+    private fun getCustomMessage(id: Long) {
+        viewModelScope.launch {
+            _state.value = _state.value.copy(isLoading = true)
+            getCustomMessageUseCase.invoke(id).collectLatest {
+                when(it){
+                    is Resource.Error -> {
+                        _uiEvent.emit(
+                            UiEvent.ShowSnackbar(
+                                it.message ?: "Error while getting data"
+                            )
+                        )
+                        _state.value =
+                            _state.value.copy(isLoading = false, error = it.message)
+                    }
+
+                    is Resource.Loading -> {
+                        _state.value = _state.value.copy(isLoading = true)
+                    }
+
+                    is Resource.Success -> {
+                        val customMessage = it.data
+                        if (customMessage != null) {
+                            _state.value.id.value = customMessage.id
+                            _state.value.receivedMessage.value = customMessage.receivedMessage
+                            _state.value.replyMessage.value = customMessage.replyMessage
+                            _state.value.receivedPattern.value = customMessage.receivedPattern
+                            _state.value.replyToOption.value = customMessage.replyToOption
+                            _state.value.isActive.value = customMessage.isActive
+                            _state.value.selectedContacts.value = customMessage.selectedContacts
+                            _state.value.replyWithChatGPT.value = customMessage.replyWithChatGptApi
+                        }
+                        _state.value = _state.value.copy(
+                            isLoading = false,
+                        )
+                    }
+                }
+            }
         }
     }
 
@@ -78,8 +124,12 @@ class UpsertCustomMessageViewModel @Inject constructor(
         if (!isValidForm(event.customMessage)) {
             return
         }
+        var customMessage = event.customMessage
+        if (_state.value.isEditing.value){
+            customMessage = event.customMessage.copy(id = _state.value.id.value)
+        }
         _state.value = _state.value.copy(isLoading = true)
-        upsCustomMessageUseCase(event.customMessage).collectLatest {
+        upsCustomMessageUseCase(customMessage).collectLatest {
             when (it) {
                 is Resource.Error -> {
                     _uiEvent.emit(

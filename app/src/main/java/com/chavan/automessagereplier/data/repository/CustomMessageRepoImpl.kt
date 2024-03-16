@@ -25,6 +25,10 @@ class CustomMessageRepoImpl @Inject constructor(
         return dao.upsertCustomMessage(customMessage.toCustomMessageEntity())
     }
 
+    override suspend fun getCustomMessage(id: Long): CustomMessage? {
+        return  dao.getCustomMessageById(id)?.toCustomMessage()
+    }
+
     override suspend fun removeCustomMessage(id: Long) {
         return dao.removeCustomMessage(id)
     }

@@ -1,6 +1,7 @@
 package com.chavan.automessagereplier.presentation.custom_message
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import com.chavan.automessagereplier.data.local.custom_message.ReceivedPattern
 import com.chavan.automessagereplier.data.local.custom_message.ReplyToOption
@@ -8,6 +9,8 @@ import com.chavan.automessagereplier.domain.model.CustomMessage
 import com.chavan.automessagereplier.domain.model.openai.OpenAiConfig
 
 data class UpsertCustomMessageState(
+    val id : MutableState<Long> = mutableLongStateOf(0),
+    val isEditing: MutableState<Boolean> = mutableStateOf(false),
     val receivedMessage: MutableState<String> = mutableStateOf("*"),
     val replyMessage: MutableState<String> = mutableStateOf(""),
     val isActive: MutableState<Boolean> = mutableStateOf(true),

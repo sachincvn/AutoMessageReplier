@@ -9,12 +9,13 @@ interface CustomMessageDao {
     @Upsert
     suspend fun upsertCustomMessage(customMessageEntity: CustomMessageEntity)
 
+    @Query("SELECT * FROM custommessageentity WHERE id=:id")
+    suspend fun getCustomMessageById(id: Long) : CustomMessageEntity?
     @Query("DELETE FROM custommessageentity WHERE id=:id")
     suspend fun removeCustomMessage(id: Long)
 
     @Query("SELECT * FROM custommessageentity")
     suspend fun getCustomMessages(): List<CustomMessageEntity>
-
     @Upsert
     suspend fun configCustomMessenger(customMessageConfigEntity: CustomMessageConfigEntity)
 

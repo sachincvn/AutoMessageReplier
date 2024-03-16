@@ -6,6 +6,7 @@ import com.chavan.automessagereplier.domain.model.custom_message.CustomMessageCo
 interface CustomMessageRepo {
     suspend fun getCustomMessages(): List<CustomMessage>
     suspend fun upsertCustomMessage(customMessage: CustomMessage)
+    suspend fun getCustomMessage(id: Long) : CustomMessage?
     suspend fun removeCustomMessage(id: Long)
     suspend fun configCustomMessage(customMessageConfig: CustomMessageConfig)
     suspend fun getCustomMessageConfig(): CustomMessageConfig?

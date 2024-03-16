@@ -44,7 +44,10 @@ fun CustomMessageItem(
         modifier = modifier
             .padding(horizontal = 16.dp, vertical = 4.dp)
             .semantics { selected = customMessage.isActive }
-            .clip(CardDefaults.shape),
+            .clip(CardDefaults.shape)
+            .clickable {
+                navigateToDetail(customMessage.id)
+            },
         colors = CardDefaults.cardColors(
             containerColor = if (customMessage.isActive) MaterialTheme.colorScheme.secondaryContainer
             else MaterialTheme.colorScheme.errorContainer
@@ -59,13 +62,6 @@ fun CustomMessageItem(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val clickModifier = Modifier.clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                ) {
-                    navigateToDetail(customMessage.id)
-                }
-
                 CircularAvatar(
                     text =
                     if ((customMessage.replyToOption == ReplyToOption.SpecificContacts)

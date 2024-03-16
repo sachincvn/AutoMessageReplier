@@ -42,7 +42,6 @@ fun UpsertTextField(
         onValueChange = { onTextChanged(it) },
         singleLine = true,
         isError = isError,
-        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType),
         visualTransformation = VisualTransformation.None,
         modifier = Modifier
             .height(60.dp)
