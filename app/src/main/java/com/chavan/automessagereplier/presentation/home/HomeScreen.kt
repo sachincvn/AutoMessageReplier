@@ -37,6 +37,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.chavan.automessagereplier.core.utils.NavigationScreen
 import com.chavan.automessagereplier.presentation.UiEvent
 import com.chavan.automessagereplier.presentation.home.components.CustomMessageItem
 import kotlinx.coroutines.flow.collectLatest
@@ -61,7 +62,7 @@ fun HomeScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navigator.navigate("UpsertCustomMessage") }
+                onClick = { navigator.navigate(NavigationScreen.UpsertCustomMessageScreen.route) }
             ) {
                 Icon(
                     Icons.Default.ChatBubbleOutline,
@@ -165,7 +166,7 @@ fun HomeScreen(
                             CustomMessageItem(
                                 customMessage = customMessage,
                                 navigateToDetail = {
-                                    navigator.navigate("UpsertCustomMessage?customMessageId=${customMessage.id}")
+                                    navigator.navigate("${NavigationScreen.UpsertCustomMessageScreen.route}?customMessageId=${customMessage.id}")
                                 },
                                 toggleActive = {
                                     homeViewModel.onEvent(

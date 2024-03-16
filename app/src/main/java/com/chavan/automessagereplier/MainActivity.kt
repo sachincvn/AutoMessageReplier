@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.chavan.automessagereplier.core.utils.NavigationScreen
 import com.chavan.automessagereplier.notification_service.NotificationUtils
 import com.chavan.automessagereplier.presentation.custom_message.UpsertCustomMessageScreen
 import com.chavan.automessagereplier.presentation.home.HomeScreen
@@ -31,10 +32,10 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = "HomeScreen") {
-                        composable("HomeScreen") {
+                        composable(NavigationScreen.HomeScreen.route) {
                             HomeScreen(navigator = navController)
                         }
-                        composable(route="UpsertCustomMessage?customMessageId={customMessageId}",
+                        composable(route="${NavigationScreen.UpsertCustomMessageScreen.route}?customMessageId={customMessageId}",
                             arguments = listOf(
                                 navArgument(
                                     name = "customMessageId"
