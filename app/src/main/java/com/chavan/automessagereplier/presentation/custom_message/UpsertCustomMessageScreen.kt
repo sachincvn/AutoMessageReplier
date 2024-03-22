@@ -124,7 +124,9 @@ fun UpsertCustomMessageScreen(
         },
     ) {
         if (state.isCustomMessageAdded) {
-            navigator.navigateUp()
+            LaunchedEffect(Unit) {
+                navigator.popBackStack()
+            }
         }
 
         Box(

@@ -16,6 +16,7 @@ import com.chavan.automessagereplier.core.utils.NavigationScreen
 import com.chavan.automessagereplier.notification_service.NotificationUtils
 import com.chavan.automessagereplier.presentation.custom_message.UpsertCustomMessageScreen
 import com.chavan.automessagereplier.presentation.home.HomeScreen
+import com.chavan.automessagereplier.presentation.permissions.NotificationPermissionScreen
 import com.chavan.automessagereplier.ui.theme.AutoMessageReplierTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,7 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-        NotificationUtils.requestNotificationPermission(this, packageName)
+//        NotificationUtils.requestNotificationPermission(this, packageName)
         super.onCreate(savedInstanceState)
         setContent {
             AutoMessageReplierTheme {
@@ -31,9 +32,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "HomeScreen") {
+                    NavHost(navController = navController, startDestination = NavigationScreen.NotificationPermissionScreen.route) {
                         composable(NavigationScreen.HomeScreen.route) {
                             HomeScreen(navigator = navController)
+                        }
+                        composable(NavigationScreen.NotificationPermissionScreen.route) {
+                            NotificationPermissionScreen(navigator = navController)
                         }
                         composable(route="${NavigationScreen.UpsertCustomMessageScreen.route}?customMessageId={customMessageId}",
                             arguments = listOf(

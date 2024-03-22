@@ -47,12 +47,12 @@ object NotificationUtils {
                 System.currentTimeMillis() - sbn.notification.`when` < MAX_OLD_NOTIFICATION_CAN_BE_REPLIED_TIME_MS
     }
 
-    private fun isNotificationAccessGranted(context: Context, packageName: String): Boolean {
+    public fun isNotificationAccessGranted(context: Context, packageName: String): Boolean {
         val notificationListenerSet = NotificationManagerCompat.getEnabledListenerPackages(context)
         return notificationListenerSet.contains(packageName)
     }
 
-    fun requestNotificationPermission(context: Context, packageName: String) {
+    public fun requestNotificationPermission(context: Context, packageName: String) {
         if (!isNotificationAccessGranted(context, packageName)) {
             val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
             context.startActivity(intent)
@@ -62,22 +62,4 @@ object NotificationUtils {
     fun isGroupMessageAndReplyAllowed(sbn: StatusBarNotification): Boolean {
         return sbn.notification.extras.getBoolean("android.isGroupConversation")
     }
-
-//    fun isGroupMessageAndReplyAllowed(sbn: StatusBarNotification): Boolean {
-//        val groupMessageReplyEnabled = false
-//        val rawTitle = getTitleRaw(sbn)
-//        //android.text returning SpannableString
-//        val rawText = SpannableString.valueOf("" + sbn.notification.extras["android.text"])
-//        // Detect possible group image message by checking for colon and text starts with camera icon #181
-//        val isPossiblyAnImageGrpMsg =
-//            rawTitle != null && (": ".contains(rawTitle) || "@ ".contains(rawTitle)) && rawText != null && rawText.toString()
-//                .contains("\uD83D\uDCF7")
-//        return if (!sbn.notification.extras.getBoolean("android.isGroupConversation"))
-//        {
-//            !isPossiblyAnImageGrpMsg
-//        } else {
-//            return groupMessageReplyEnabled
-//        }
-//    }
-
 }
