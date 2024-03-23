@@ -47,12 +47,12 @@ object NotificationUtils {
                 System.currentTimeMillis() - sbn.notification.`when` < MAX_OLD_NOTIFICATION_CAN_BE_REPLIED_TIME_MS
     }
 
-    public fun isNotificationAccessGranted(context: Context, packageName: String): Boolean {
+    fun isNotificationAccessGranted(context: Context, packageName: String): Boolean {
         val notificationListenerSet = NotificationManagerCompat.getEnabledListenerPackages(context)
         return notificationListenerSet.contains(packageName)
     }
 
-    public fun requestNotificationPermission(context: Context, packageName: String) {
+    fun requestNotificationPermission(context: Context, packageName: String) {
         if (!isNotificationAccessGranted(context, packageName)) {
             val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
             context.startActivity(intent)

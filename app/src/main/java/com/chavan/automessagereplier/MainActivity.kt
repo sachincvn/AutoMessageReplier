@@ -24,22 +24,29 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-//        NotificationUtils.requestNotificationPermission(this, packageName)
         super.onCreate(savedInstanceState)
+
+        val startDestination = if (NotificationUtils.isNotificationAccessGranted(
+                this,
+                this.packageName
+            )
+        ) NavigationScreen.HomeScreen.route else NavigationScreen.NotificationPermissionScreen.route
+
         setContent {
             AutoMessageReplierTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = NavigationScreen.NotificationPermissionScreen.route) {
+                    NavHost(navController = navController, startDestination = startDestination) {
                         composable(NavigationScreen.HomeScreen.route) {
                             HomeScreen(navigator = navController)
                         }
                         composable(NavigationScreen.NotificationPermissionScreen.route) {
                             NotificationPermissionScreen(navigator = navController)
                         }
-                        composable(route="${NavigationScreen.UpsertCustomMessageScreen.route}?customMessageId={customMessageId}",
+                        composable(
+                            route = "${NavigationScreen.UpsertCustomMessageScreen.route}?customMessageId={customMessageId}",
                             arguments = listOf(
                                 navArgument(
                                     name = "customMessageId"
@@ -51,8 +58,7 @@ class MainActivity : ComponentActivity() {
                         ) {
                             val customMessageId = it.arguments?.getLong("customMessageId") ?: -1
                             UpsertCustomMessageScreen(
-                                navigator = navController,
-                                customMessageId = customMessageId
+                                navigator = navController, customMessageId = customMessageId
                             )
                         }
                     }
@@ -60,6 +66,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
-
 }

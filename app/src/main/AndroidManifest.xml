@@ -29,6 +29,10 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".SplashActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false"/>
+
         <service
             android:name=".notification_service.NotificationService"
             android:label="Notification Service"

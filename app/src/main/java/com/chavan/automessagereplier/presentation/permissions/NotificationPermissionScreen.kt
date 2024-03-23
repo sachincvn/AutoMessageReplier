@@ -2,6 +2,7 @@ package com.chavan.automessagereplier.presentation.permissions
 
 import android.content.Intent
 import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -22,6 +23,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,16 +45,16 @@ fun NotificationPermissionScreen(
 ) {
     val context = LocalContext.current
     val requestPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (NotificationUtils.isNotificationAccessGranted(context,"com.chavan.automessagereplier")) {
+        if (NotificationUtils.isNotificationAccessGranted(context,context.packageName)) {
             navigator.navigate(NavigationScreen.HomeScreen.route) {
                 popUpTo(NavigationScreen.NotificationPermissionScreen.route) { inclusive = true }
             }
         } else {
-            // Handle permission denial
+           Toast.makeText(context,"Permission denied",Toast.LENGTH_LONG).show()
         }
     }
 
-    if (NotificationUtils.isNotificationAccessGranted(context,"com.chavan.automessagereplier")) {
+    if (NotificationUtils.isNotificationAccessGranted(context,context.packageName)) {
         navigator.navigate(NavigationScreen.HomeScreen.route) {
             popUpTo(NavigationScreen.NotificationPermissionScreen.route) { inclusive = true }
         }
@@ -125,7 +127,9 @@ fun NotificationPermissionScreen(
                         .padding(bottom = 20.dp)
                         .clickable {
                             navigator.navigate(NavigationScreen.HomeScreen.route) {
-                                popUpTo(NavigationScreen.NotificationPermissionScreen.route) { inclusive = true }
+                                popUpTo(NavigationScreen.NotificationPermissionScreen.route) {
+                                    inclusive = true
+                                }
                             }
                         }
                 )
