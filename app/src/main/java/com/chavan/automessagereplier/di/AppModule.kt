@@ -1,6 +1,7 @@
 package com.chavan.automessagereplier.di
 
 import android.app.Application
+import android.content.Context
 import androidx.room.Room
 import com.chavan.automessagereplier.core.commons.Constants
 import com.chavan.automessagereplier.data.local.CustomMessageDatabase
@@ -9,6 +10,7 @@ import com.chavan.automessagereplier.data.remote.services.openapi.IOpenaiGptApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -43,5 +45,12 @@ class AppModule {
     @Singleton
     fun provideOpenAiConfigDao(database: CustomMessageDatabase): OpenAiConfigDao {
         return database.openAiConfigDao
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideApplicationContext(@ApplicationContext appContext: Context): Context {
+        return appContext
     }
 }

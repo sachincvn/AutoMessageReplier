@@ -334,7 +334,7 @@ private fun TopAppBar(
     CenterAlignedTopAppBar(
         title = {
             Text(
-                if(state.isEditing.value) "Add custom reply" else "Edit custom reply",
+                if(state.isEditing.value) "Edit custom reply" else "Add custom reply",
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium)

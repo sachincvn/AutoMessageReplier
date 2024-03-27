@@ -27,8 +27,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val startDestination = if (NotificationUtils.isNotificationAccessGranted(
-                this,
-                this.packageName
+                this, this.packageName
             )
         ) NavigationScreen.HomeScreen.route else NavigationScreen.NotificationPermissionScreen.route
 
