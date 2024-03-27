@@ -98,6 +98,9 @@ class UpsertCustomMessageViewModel @Inject constructor(
                             _state.value.isActive.value = customMessage.isActive
                             _state.value.selectedContacts.value = customMessage.selectedContacts
                             _state.value.replyWithChatGPT.value = customMessage.replyWithChatGptApi
+                            if (customMessage.selectedContacts.isNotEmpty()){
+                                _state.value.selectedContactName.value = customMessage.selectedContacts.first()
+                            }
                         }
                         _state.value = _state.value.copy(
                             isLoading = false,
