@@ -46,7 +46,7 @@ AutoMessenger integrates with OpenAI to provide intelligent auto-responses. Foll
 
 ### Demo Video
 
-https://github.com/sachincvn/AutoMessageReplier/raw/master/media/video_demo.mp4
+[![Demo Video](https://github.com/sachincvn/AutoMessageReplier/raw/master/media/1.jpg)](https://github.com/sachincvn/AutoMessageReplier/raw/master/media/video_demo.mp4)
 
 ## Contributing
 
