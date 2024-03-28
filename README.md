@@ -7,7 +7,7 @@ AutoMessenger is an Android application designed to simplify the process of send
 - Clean Architecture
 - MVVM
 
-  ---
+---
 
 ## Features
 
@@ -43,15 +43,11 @@ AutoMessenger integrates with OpenAI to provide intelligent auto-responses. Foll
 
 ### Screenshots
 
-  <p align = "left" >
+  <p align = "center" >
     <img width="250" height="500" src="media/1.jpg">
     <img width="250" height="500"  src="media/2.jpg"> 
     <img width="250" height="500" src="media/3.jpg"> 
   </p>
-
-### Demo Video
-
-  <img src="media/video_demo.gif" width="250" align="center">
 
 ## Contributing
 
