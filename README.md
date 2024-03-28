@@ -2,6 +2,10 @@
 
 AutoMessenger is an Android application designed to simplify the process of sending auto replies to messages. With AutoMessenger, users can set up custom auto-reply messages for various messaging platforms such as WhatsApp. This auto message sender app seamlessly integrates with OpenAI for intelligent auto-responses, making it a top choice for users looking for a reliable auto message sender. 
 
+##Architecture
+- Clean Architecture
+- MVVM
+
 ## Features
 
 - **Custom Auto Replies:** Users can easily set up custom auto-reply messages for different messaging platforms such as SMS, WhatsApp, Messenger, etc.
@@ -46,12 +50,10 @@ AutoMessenger integrates with OpenAI to provide intelligent auto-responses. Foll
 
 ### Demo Video
 
-[![Demo Video](https://github.com/sachincvn/AutoMessageReplier/raw/master/media/1.jpg)](https://github.com/sachincvn/AutoMessageReplier/raw/master/media/video_demo.mp4)
+<p align="center">
+  <video src="https://github.com/sachincvn/AutoMessageReplier/raw/master/media/video_demo.mp4" width="500px"></video>
+</p>
 
 ## Contributing
 
 Contributions are welcome! If you have any suggestions, bug reports, or feature requests, please open an issue on the GitHub repository. If you'd like to contribute code, please fork the repository and submit a pull request.
-
----
-
-**Note:** AutoMessenger is a fictitious project created for demonstration purposes.
