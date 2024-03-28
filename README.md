@@ -9,6 +9,10 @@ AutoMessenger is an Android application designed to simplify the process of send
 
 ---
 
+## Try Now / Download Now
+
+📥 **Download APK:** [Download Now](https://github.com/sachincvn/AutoMessageReplier/raw/master/media/AutoMessengerv1.1.apk)
+
 ## Features
 
 - **Custom Auto Replies:** Users can easily set up custom auto-reply messages for different messaging platforms such as SMS, WhatsApp, Messenger, etc.
