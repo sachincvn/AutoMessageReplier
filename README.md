@@ -37,7 +37,7 @@ AutoMessenger integrates with OpenAI to provide intelligent auto-responses. Foll
 
 ### Screenshots
 
-![Screenshot 1](/mesia/1.jpg)
+![Screenshot 1](https://github.com/sachincvn/AutoMessageReplier/blob/master/media/1.jpg)
 *Home Screen*
 
 ![Screenshot 1](/mesia/2.jpg)
