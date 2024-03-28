@@ -20,19 +20,31 @@ AutoMessenger is an Android application designed to simplify the process of send
 
 ## OpenAI Integration
 
-AutoMessenger integrates with OpenAI to provide intelligent auto-responses. To enable this feature, you will need to obtain an API key from OpenAI and enter it into the application settings.
+AutoMessenger integrates with OpenAI to provide intelligent auto-responses. Follow the steps below to obtain an API key for OpenAI:
 
-For more information on obtaining an API key and integrating with OpenAI, refer to the [OpenAI API documentation](https://openai.com/docs/).
+1. **Sign Up/Login:** Visit the [OpenAI website](https://openai.com/) and sign up for an account. If you already have an account, simply log in.
+
+2. **Navigate to API Section:** Once logged in, navigate to the API section of your account dashboard.
+
+3. **Generate API Key:** In the API section, you'll find an option to generate an API key. Click on it and follow the instructions to generate your unique API key.
+
+4. **Copy API Key:** Once generated, copy your API key to your clipboard.
+
+5. **Enter API Key in AutoMessenger:** Launch the AutoMessenger application on your Android device, navigate to the settings section, and find the option to enter your OpenAI API key. Paste the copied API key into the designated field.
+
 
 ## Media
 
 ### Screenshots
 
-![Screenshot 1](/screenshots/screenshot1.png)
-*Caption for Screenshot 1*
+![Screenshot 1](/mesia/1.jpg)
+*Home Screen*
 
-![Screenshot 2](/screenshots/screenshot2.png)
-*Caption for Screenshot 2*
+![Screenshot 1](/mesia/2.jpg)
+*Add a custom message*
+
+![Screenshot 1](/mesia/3.jpg)
+*Integrate with open ai Key*
 
 ### Demo Video
 
