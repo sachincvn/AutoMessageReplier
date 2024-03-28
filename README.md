@@ -37,17 +37,12 @@ AutoMessenger integrates with OpenAI to provide intelligent auto-responses. Foll
 
 ### Screenshots
 
-<div style="overflow: auto;">
-    <div style="float: left; width: 33.33%; padding: 5px;">
-        <img src="https://github.com/sachincvn/AutoMessageReplier/blob/master/media/1.jpg" alt="Screenshot 1" width="100%" />
-    </div>
-    <div style="float: left; width: 33.33%; padding: 5px;">
-        <img src="https://github.com/sachincvn/AutoMessageReplier/blob/master/media/2.jpg" alt="Screenshot 2" width="100%" />
-    </div>
-    <div style="float: left; width: 33.33%; padding: 5px;">
-        <img src="https://github.com/sachincvn/AutoMessageReplier/blob/master/media/3.jpg" alt="Screenshot 3" width="100%" />
-    </div>
-</div>
+<p align = "left" >
+  <img width="250" height="500" src="media/1.jpg">
+  <img width="250" height="500"  src="media/2.jpg"> 
+  <img width="250" height="500" src="media/3.jpg"> 
+</p>
+
 
 ### Demo Video
 
