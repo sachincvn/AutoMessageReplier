@@ -1,10 +1,13 @@
-# AutoMessenger Android Application
+# AutoMessenger Android [Kotlin jetpack compose]
 
-AutoMessenger is an Android application designed to simplify the process of sending auto replies to messages. With AutoMessenger, users can set up custom auto-reply messages for various messaging platforms such as WhatsApp. This auto message sender app seamlessly integrates with OpenAI for intelligent auto-responses, making it a top choice for users looking for a reliable auto message sender. 
+AutoMessenger is an Android application designed to simplify the process of sending auto replies to messages. With AutoMessenger, users can set up custom auto-reply messages for various messaging platforms such as WhatsApp. This auto message sender app seamlessly integrates with OpenAI for intelligent auto-responses, making it a top choice for users looking for a reliable auto message sender.
 
-##Architecture
+## Architecture
+
 - Clean Architecture
 - MVVM
+
+  ---
 
 ## Features
 
@@ -36,24 +39,22 @@ AutoMessenger integrates with OpenAI to provide intelligent auto-responses. Foll
 
 5. **Enter API Key in AutoMessenger:** Launch the AutoMessenger application on your Android device, navigate to the settings section, and find the option to enter your OpenAI API key. Paste the copied API key into the designated field.
 
-
 ## Media
 
 ### Screenshots
 
-<p align = "left" >
-  <img width="250" height="500" src="media/1.jpg">
-  <img width="250" height="500"  src="media/2.jpg"> 
-  <img width="250" height="500" src="media/3.jpg"> 
-</p>
-
+  <p align = "left" >
+    <img width="250" height="500" src="media/1.jpg">
+    <img width="250" height="500"  src="media/2.jpg"> 
+    <img width="250" height="500" src="media/3.jpg"> 
+  </p>
 
 ### Demo Video
 
-<p align="center">
-  <video src="https://github.com/sachincvn/AutoMessageReplier/raw/master/media/video_demo.mp4" width="500px"></video>
-</p>
+  <img src="media/video_demo.gif" width="250" align="center">
 
 ## Contributing
 
 Contributions are welcome! If you have any suggestions, bug reports, or feature requests, please open an issue on the GitHub repository. If you'd like to contribute code, please fork the repository and submit a pull request.
+
+  ---
