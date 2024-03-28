@@ -40,10 +40,10 @@ AutoMessenger integrates with OpenAI to provide intelligent auto-responses. Foll
 ![Screenshot 1](https://github.com/sachincvn/AutoMessageReplier/blob/master/media/1.jpg)
 *Home Screen*
 
-![Screenshot 1](/mesia/2.jpg)
+![Screenshot 2](https://github.com/sachincvn/AutoMessageReplier/blob/master/media/2.jpg)
 *Add a custom message*
 
-![Screenshot 1](/mesia/3.jpg)
+![Screenshot 3](https://github.com/sachincvn/AutoMessageReplier/blob/master/media/3.jpg)
 *Integrate with open ai Key*
 
 ### Demo Video
