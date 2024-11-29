@@ -2,6 +2,7 @@ package com.chavan.automessagereplier.domain.usecase
 
 import android.app.Notification
 import android.service.notification.StatusBarNotification
+import androidx.compose.ui.text.toLowerCase
 import com.chavan.automessagereplier.core.utils.StringChecker.isName
 import com.chavan.automessagereplier.data.local.custom_message.ReceivedPattern
 import com.chavan.automessagereplier.data.local.custom_message.ReplyToOption
@@ -62,9 +63,9 @@ class AutoMessageReplierUseCase @Inject constructor(
             when (customMessage.receivedPattern) {
                 ReceivedPattern.ExactMatch -> if (notificationText == customMessage.receivedMessage) customMessage.replyMessage else null
                 ReceivedPattern.Contains -> if (notificationText.contains(customMessage.receivedMessage)) customMessage.replyMessage else null
-                ReceivedPattern.StartsWith -> if (notificationText.startsWith(customMessage.receivedMessage)) customMessage.replyMessage else null
-                ReceivedPattern.EndsWith -> if (notificationText.endsWith(customMessage.receivedMessage)) customMessage.replyMessage else null
-                ReceivedPattern.SimilarMatch -> if (notificationText.contentEquals(customMessage.receivedMessage)) customMessage.replyMessage else null
+                ReceivedPattern.StartsWith -> if (notificationText.lowercase().startsWith(customMessage.receivedMessage.lowercase())) customMessage.replyMessage else null
+                ReceivedPattern.EndsWith -> if (notificationText.lowercase().endsWith(customMessage.receivedMessage.lowercase())) customMessage.replyMessage else null
+                ReceivedPattern.SimilarMatch -> if (notificationText.lowercase().contentEquals(customMessage.receivedMessage.lowercase())) customMessage.replyMessage else null
                 ReceivedPattern.AnyMessage -> customMessage.replyMessage
             }
         }

@@ -60,11 +60,6 @@ import com.chavan.automessagereplier.presentation.home.components.AppTopAppBar
 import com.chavan.automessagereplier.presentation.home.components.CustomMessageItem
 import kotlinx.coroutines.flow.collectLatest
 
-@OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalAnimationApi::class,
-    ExperimentalComposeUiApi::class
-)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(
@@ -72,7 +67,7 @@ fun HomeScreen(
 ) {
     val state = homeViewModel.state.value
     val snackBarHostState = remember { SnackbarHostState() }
-    val emptyLottie by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.hello_lottie))
+    val emptyLottie by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.hello_lottie_1))
 
     val navigationState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
